@@ -24,6 +24,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (!STRIPE_SECRET_KEY || !STRIPE_WEBHOOK_SECRET) {
+    throw new Error('Stripe environment variables are missing.');
+  }
+
   if (req.method !== 'POST') return res.status(405).end();
 
   const sig = req.headers['stripe-signature'] as string | undefined;
@@ -42,9 +46,14 @@ export default async function handler(
       sig,
       STRIPE_WEBHOOK_SECRET
     );
-  } catch (err: any) {
-    console.error('Webhook error:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error('Webhook error:', err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    } else {
+      console.error('Unknown webhook error:', err);
+      return res.status(400).send('Webhook Error: Unknown error');
+    }
   }
 
   if (event.type === 'checkout.session.completed') {

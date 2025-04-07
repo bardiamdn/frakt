@@ -10,6 +10,11 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    files: ["src/types/supabase.ts"],
+    rules: {},
+    ignores: true,
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
