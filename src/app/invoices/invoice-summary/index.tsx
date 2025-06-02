@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 
 export default function InvoiceSummary() {
@@ -9,7 +10,23 @@ export default function InvoiceSummary() {
           <div className="text-sm text-muted-foreground">
             Summary of your invoice details
           </div>
-          <button className="btn btn-primary">Download PDF</button>
+          <Button className="rounded-sm">
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 19 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.5 2.375L9.5 16.625M16.625 9.5L2.375 9.5"
+                stroke="white"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="font-semibold">New</span>
+          </Button>
         </div>
       </div>
       <div className="flex gap-[20px] h-[150px]">

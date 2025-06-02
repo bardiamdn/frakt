@@ -5,6 +5,7 @@ import { PaymentProvider } from "@/context/paymentContext";
 import { SidebarProvider } from "@/components/ui/sidebar";
 // import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import LayoutWrapper from "@/components/layout-wrapper";
+import AppProviders from "@/providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,13 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        {/* <QueryClientProvider client={queryClient}> */}
-        <SidebarProvider>
-          <PaymentProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </PaymentProvider>
-        </SidebarProvider>
-        {/* </QueryClientProvider> */}
+        <AppProviders>
+          <LayoutWrapper>{children}</LayoutWrapper>
+        </AppProviders>
       </body>
     </html>
   );
