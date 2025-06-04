@@ -25,6 +25,7 @@ export const columns: ColumnDef<Invoice>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="text-foreground-muted"
       />
     ),
     enableSorting: false,
@@ -33,7 +34,7 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "invoice_id",
     header: ({ table }) => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="12"
           height="12"
@@ -68,11 +69,16 @@ export const columns: ColumnDef<Invoice>[] = [
         <span>Invoice ID</span>
       </div>
     ),
+    cell: ({ row }) => (
+      <div className=" font-normal text-center overflow-ellipsis text-foreground-muted">
+        {row.getValue("invoice_id")}
+      </div>
+    ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "client_name",
     header: ({ table }) => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="15"
           height="16"
@@ -99,11 +105,16 @@ export const columns: ColumnDef<Invoice>[] = [
         <span>Name</span>
       </div>
     ),
+    cell: ({ row }) => (
+      <div className=" font-normal text-center overflow-ellipsis">
+        {row.getValue("client_name")}
+      </div>
+    ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "client_email",
     header: ({ table }) => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="15"
           height="16"
@@ -119,11 +130,16 @@ export const columns: ColumnDef<Invoice>[] = [
         <span>Email</span>
       </div>
     ),
+    cell: ({ row }) => (
+      <div className=" font-normal text-center overflow-ellipsis text-foreground-muted">
+        {row.getValue("client_email")}
+      </div>
+    ),
   },
   {
     accessorKey: "due_date",
     header: ({ table }) => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="15"
           height="16"
@@ -149,13 +165,17 @@ export const columns: ColumnDef<Invoice>[] = [
     cell: ({ row }) => {
       const rawDate = row.getValue("due_date") as string | null;
       const displayDate = rawDate ? rawDate.split("T")[0] : "—";
-      return <div>{displayDate}</div>;
+      return (
+        <div className="text-center overflow-ellipsis text-foreground-muted">
+          {displayDate}
+        </div>
+      );
     },
   },
   {
     accessorKey: "amount",
     header: () => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="16"
           height="16"
@@ -185,13 +205,17 @@ export const columns: ColumnDef<Invoice>[] = [
     ),
     cell: ({ row }) => {
       const amount: number = row.getValue("amount");
-      return <div className="text-center font-medium">${amount}</div>;
+      return (
+        <div className="text-lg font-normal text-center overflow-ellipsis">
+          ${amount}
+        </div>
+      );
     },
   },
   {
     accessorKey: "paid",
     header: () => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="16"
           height="16"
@@ -215,24 +239,24 @@ export const columns: ColumnDef<Invoice>[] = [
 
       if (paid) {
         return (
-          <div className="flex items-center justify-center">
-            <span className="block bg-[#E1FCEF] py-[3px] px-[13px] rounded-full text-center text-[#14804A]">
+          <div className="flex items-center justify-center text-center overflow-ellipsis text-foreground-muted">
+            <span className="block bg-[#E1FCEF] py-[3px] px-[13px] rounded-full  text-[#14804A]">
               Paid
             </span>
           </div>
         );
       } else if (!paid && dueDate >= now) {
         return (
-          <div className="flex items-center justify-center">
-            <span className="block bg-[#F0F1FA] py-[3px] px-[13px] rounded-full text-center text-[#4F5AED]">
+          <div className="flex items-center justify-center text-center overflow-ellipsis text-foreground-muted">
+            <span className="block bg-[#F0F1FA] py-[3px] px-[13px] rounded-full  text-[#4F5AED]">
               Unpaid
             </span>
           </div>
         );
       } else {
         return (
-          <div className="flex items-center justify-center">
-            <span className="bg-[#FAF0F2] block py-[3px] px-[13px] rounded-full text-center text-[#D12953]">
+          <div className="flex items-center justify-center text-center overflow-ellipsis text-foreground-muted">
+            <span className="bg-[#FAF0F2] block py-[3px] px-[13px] rounded-full  text-[#D12953]">
               Overdue
             </span>
           </div>
@@ -243,7 +267,7 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "description",
     header: () => (
-      <div className="flex items-center gap-[5px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="15"
           height="16"
@@ -273,6 +297,11 @@ export const columns: ColumnDef<Invoice>[] = [
           </defs>
         </svg>
         <span>Description</span>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className=" font-normal text-center overflow-ellipsis text-foreground-muted">
+        {row.getValue("description")}
       </div>
     ),
   },

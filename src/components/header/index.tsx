@@ -3,7 +3,7 @@ import Profile from "./profile";
 
 export default function Header() {
   return (
-    <header className="w-full h-[100px] bg-background-accent flex items-center py-[20px] px-[50px] justify-between sticky top-0">
+    <header className="w-full h-[100px] bg-background-accent flex items-center py-[20px] px-[50px] justify-between sticky top-0 z-20">
       <SidebarTrigger />
       {/* <svg
           width="25"

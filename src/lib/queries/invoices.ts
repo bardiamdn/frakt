@@ -1,12 +1,25 @@
 // /src/lib/queries/invoices.ts
 import { supabase } from "../supabaseClient";
+import { Database } from "@/types/supabase";
 
-export const fetchInvoices = async () => {
-  const { data, error } = await supabase.from("invoices").select("*");
+type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
-  if (error) {
-    throw new Error(error.message);
-  }
+export const fetchInvoices = async ({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}): Promise<{ data: Invoice[]; count: number | null }> => {
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
-  return data;
+  const { data, count, error } = await supabase
+    .from("invoices")
+    .select("*", { count: "exact" })
+    .range(from, to);
+
+  if (error) throw new Error(error.message);
+
+  return { data: data ?? [], count };
 };
