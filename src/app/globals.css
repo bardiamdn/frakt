@@ -42,6 +42,7 @@
   --color-card: var(--background);
   --color-icon-background: var(--icon-background);
   --color-icon: var(--icon);
+  --color-button-foreground: var(--button-foreground);
   --color-orange-icon: #E4991B;
   --color-orange-border: #EBCA93;
   --color-orange-background: #FFF2D5;
@@ -79,6 +80,7 @@
   --accent: #FAF8FD;
   --icon-background: #F1EEF3;
   --icon: #818181;
+  --button-foreground: white;
 
   /* --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

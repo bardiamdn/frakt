@@ -258,15 +258,14 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar();
+  const { open, toggleSidebar } = useSidebar();
 
   return (
-    <Button
-      data-sidebar="trigger"
-      data-slot="sidebar-trigger"
-      variant="ghost"
-      // size="icon"
-      className={cn("p-0", className)}
+    <button
+      className={cn(
+        "rounded-sm p-[10px] hover:bg-background/50 hover:text-accent-foreground dark:hover:bg-background/50",
+        className
+      )}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -280,6 +279,7 @@ function SidebarTrigger({
         viewBox="0 0 31 31"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className="size-6"
       >
         <line x1="11" y1="1" x2="11" y2="30" stroke="#919397" strokeWidth="2" />
         <rect
@@ -291,23 +291,26 @@ function SidebarTrigger({
           stroke="#919397"
           strokeWidth="2"
         />
-        <path
-          d="M22 19L18 15L22 11"
-          stroke="#919397"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* <path
-          d="M18 11L22 15L18 19"
-          stroke="#919397"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        /> */}
+        {open ? (
+          <path
+            d="M22 19L18 15L22 11"
+            stroke="#919397"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        ) : (
+          <path
+            d="M18 11L22 15L18 19"
+            stroke="#919397"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )}
       </svg>
       <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+    </button>
   );
 }
 

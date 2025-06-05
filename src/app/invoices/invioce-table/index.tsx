@@ -42,8 +42,15 @@ export default function InvoiceTable<TData, TValue>({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
-  const statusFilter = columnFilters.find((filter) => filter.id === "paid")
-    ?.value as string[] | undefined;
+  const rawStatusFilter = columnFilters.find(
+    (filter) => filter.id === "paid"
+  )?.value;
+  const statusFilter = Array.isArray(rawStatusFilter)
+    ? rawStatusFilter.filter((val): val is "paid" | "unpaid" | "overdue" =>
+        ["paid", "unpaid", "overdue"].includes(val)
+      )
+    : undefined;
+
   const { data, isLoading, isError, error } = useQuery<
     { data: Invoice[]; count: number | null },
     Error
