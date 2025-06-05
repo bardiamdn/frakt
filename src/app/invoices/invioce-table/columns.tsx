@@ -3,8 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Database } from "@/types/supabase";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
-import { CheckIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Check, CheckIcon } from "lucide-react";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -418,16 +418,64 @@ export const columns: ColumnDef<Invoice>[] = [
     accessorKey: "paid",
     header: ({ column }) => {
       const [open, setOpen] = useState(false);
+      const wrapperRef = useRef<HTMLDivElement>(null);
+      const triggerRef = useRef<HTMLButtonElement>(null);
+      const initialFilter = column.getFilterValue() as string[] | undefined;
+      const allStatuses = ["paid", "unpaid", "overdue"];
+      const [selectedStatuses, setSelectedStatuses] = useState<string[]>(() => {
+        if (Array.isArray(initialFilter) && initialFilter.length) {
+          return initialFilter;
+        } else {
+          return [...allStatuses];
+        }
+      });
+
+      useEffect(() => {
+        column.setFilterValue(selectedStatuses);
+      }, [selectedStatuses, column]);
+
       const handleClick = (value: string) => {
         column.setFilterValue(
           value === column.getFilterValue() ? undefined : value
         );
-        setOpen(false);
       };
+
+      const toggleStatus = (status: string) => {
+        setSelectedStatuses((prev) => {
+          const isCurrentlyChecked = prev.includes(status);
+          if (isCurrentlyChecked) {
+            if (prev.length === 1) {
+              return prev;
+            }
+            return prev.filter((s) => s !== status);
+          } else {
+            return [...prev, status];
+          }
+        });
+      };
+
+      useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (
+            wrapperRef.current &&
+            triggerRef.current &&
+            !wrapperRef.current.contains(event.target as Node) &&
+            !triggerRef.current.contains(event.target as Node)
+          ) {
+            setOpen(false);
+          }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [open]);
 
       return (
         <div className="relative flex items-center justify-center text-foreground-muted">
           <button
+            ref={triggerRef}
             className="relative group cursor-default gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
             onClick={() => setOpen(!open)}
           >
@@ -462,57 +510,41 @@ export const columns: ColumnDef<Invoice>[] = [
             </svg>
           </button>
           <div
+            ref={wrapperRef}
             className={`${
               open
                 ? "opacity-100 pointer-events-auto scale-100"
                 : "opacity-0 pointer-events-none scale-90"
-            } p-[8px] border border-border absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 bg-background h-auto w-auto rounded-md duration-200 transition-all ease-in-out `}
+            } shadow-2xl shadow-gray-200  p-[8px] border border-border z-10 absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 bg-background h-auto w-auto rounded-md duration-200 transition-all ease-in-out `}
           >
-            <button
-              className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
-              onClick={() => handleClick("paid")}
-            >
-              <CheckIcon
-                className={
-                  column.getFilterValue() === "paid"
-                    ? "size-6 mr-[10px] opacity-100"
-                    : "size-6 mr-[10px] opacity-0"
-                }
-              />
-              <span className="block bg-[#E1FCEF] py-[3px] px-[13px] rounded-full text-[#14804A] w-full">
-                Paid
-              </span>
-            </button>
-            <button
-              className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
-              onClick={() => handleClick("unpaid")}
-            >
-              <CheckIcon
-                className={
-                  column.getFilterValue() === "unpaid"
-                    ? "size-6 mr-[10px] opacity-100"
-                    : "size-6 mr-[10px] opacity-0"
-                }
-              />
-              <span className="block bg-[#F0F1FA] py-[3px] px-[13px] rounded-full text-[#4F5AED] w-full">
-                Unpaid
-              </span>
-            </button>
-            <button
-              className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
-              onClick={() => handleClick("overdue")}
-            >
-              <CheckIcon
-                className={
-                  column.getFilterValue() === "overdue"
-                    ? "size-6 mr-[10px] opacity-100"
-                    : "size-6 mr-[10px] opacity-0"
-                }
-              />
-              <span className="bg-[#FAF0F2] block py-[3px] px-[13px] rounded-full text-[#D12953] w-full">
-                Overdue
-              </span>
-            </button>
+            {allStatuses.map((status) => {
+              const isChecked = selectedStatuses.includes(status);
+
+              let bgColor = "bg-[#F0F1FA] text-[#4F5AED]";
+              if (status === "paid") bgColor = "bg-[#E1FCEF] text-[#14804A]";
+              if (status === "overdue") bgColor = "bg-[#FAF0F2] text-[#D12953]";
+
+              return (
+                <button
+                  className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
+                  onClick={() => toggleStatus(status)}
+                  key={status}
+                >
+                  <CheckIcon
+                    className={
+                      isChecked
+                        ? "mr-[10px] opacity-100"
+                        : "mr-[10px] opacity-0"
+                    }
+                  />
+                  <span
+                    className={`block ${bgColor} py-[3px] px-[13px] rounded-full w-full`}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       );
@@ -586,7 +618,7 @@ export const columns: ColumnDef<Invoice>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="font-normal text-foreground-muted flex justify-center items-center ">
+      <div className="relative pointer-default group font-normal text-foreground-muted flex justify-center items-center ">
         <span className="text-center overflow-clip w-[150px]">
           {row.getValue("description")}
         </span>

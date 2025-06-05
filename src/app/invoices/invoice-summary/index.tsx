@@ -10,7 +10,7 @@ export default function InvoiceSummary() {
           <div className="text-sm text-muted-foreground">
             Summary of your invoice details
           </div>
-          <Button className="rounded-sm">
+          <Button className="rounded-sm text-white">
             <svg
               width="19"
               height="19"

@@ -3,28 +3,27 @@
 import {
   useReactTable,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   type ColumnDef,
   type SortingState,
   flexRender,
+  ColumnFiltersState,
 } from "@tanstack/react-table";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchInvoices } from "@/lib/queries/invoices";
 import { Database } from "@/types/supabase";
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CheckIcon } from "lucide-react";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -35,15 +34,27 @@ interface DataTableProps<TData, TValue> {
 export default function InvoiceTable<TData, TValue>({
   columns,
 }: DataTableProps<TData, TValue>) {
+  const [pageSizeOpen, setPageSizeOpen] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(25);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const statusFilter = columnFilters.find((filter) => filter.id === "paid")
+    ?.value as string[] | undefined;
   const { data, isLoading, isError, error } = useQuery<
     { data: Invoice[]; count: number | null },
     Error
   >({
-    queryKey: ["invoices", pageIndex, pageSize],
-    queryFn: () => fetchInvoices({ page: pageIndex, pageSize }),
-    // keepPreviousData: true,
+    queryKey: ["invoices", pageIndex, pageSize, statusFilter],
+    queryFn: () =>
+      fetchInvoices({
+        page: pageIndex,
+        pageSize,
+        statusFilters: statusFilter,
+      }),
   });
 
   const [sorting, setSorting] = useState<SortingState>([
@@ -59,23 +70,49 @@ export default function InvoiceTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     manualPagination: true,
-    pageCount: data?.count ? Math.ceil(data.count / pageSize) : -1,
     state: {
       sorting,
+      columnFilters,
       pagination: {
         pageIndex: pageIndex - 1,
         pageSize,
       },
     },
+    pageCount: data?.count ? Math.ceil(data.count / pageSize) : -1,
   });
 
-  if (isError) return <div>Error: {(error as Error).message}</div>;
+  const handlePageSizeToggle = (value: number) => {
+    setPageSize(value);
+    setPageSizeOpen(false);
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        triggerRef.current &&
+        !wrapperRef.current.contains(event.target as Node) &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setPageSizeOpen(false);
+      }
+    }
+    if (pageSizeOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [pageSizeOpen]);
 
   return (
     <div className="rounded-xl border md:min-h-[600px] bg-background flex flex-col justify-between ">
       <Table className="w-full text-sm">
-        <TableHeader className="">
+        <TableHeader className="z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="px-[20px]">
               {headerGroup.headers.map((header) => (
@@ -92,7 +129,7 @@ export default function InvoiceTable<TData, TValue>({
           ))}
         </TableHeader>
 
-        <TableBody className="">
+        <TableBody className="h-[100px]">
           {isLoading ? (
             [...Array(10)].map((_, index) => (
               <TableRow className="border-none px-[20px]" key={index}>
@@ -114,14 +151,20 @@ export default function InvoiceTable<TData, TValue>({
               </TableRow>
             ))
           ) : isError ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-4">
+            <TableRow className="">
+              <TableCell
+                colSpan={columns.length}
+                className="h-[400px] text-center py-4"
+              >
                 An error occured.
               </TableCell>
             </TableRow>
           ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-4">
+            <TableRow className="">
+              <TableCell
+                colSpan={columns.length}
+                className="h-[400px] text-center py-4"
+              >
                 No results found.
               </TableCell>
             </TableRow>
@@ -137,11 +180,15 @@ export default function InvoiceTable<TData, TValue>({
           of {data?.count ? data.count : 0} results
         </div>
         <div className="flex items-center justify-end space-x-2 ">
-          <div className="flex items-center mr-[30px] space-x-2">
+          <div className="relative flex items-center mr-[30px] space-x-2">
             <span className="flex items-center text-xs text-foreground-muted">
               Rows per page:
             </span>
-            <button className="flex items-center text-xs text-foreground-muted w-[70px] gap-[8px] border border-border justify-between rounded-sm py-[5px] px-[15px] hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50">
+            <button
+              ref={triggerRef}
+              className="flex items-center text-xs text-foreground-muted w-[70px] gap-[8px] border border-border justify-between rounded-sm py-[5px] px-[15px] hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+              onClick={() => setPageSizeOpen(!pageSizeOpen)}
+            >
               {table.getState().pagination.pageSize}
               <svg
                 width="8"
@@ -153,12 +200,73 @@ export default function InvoiceTable<TData, TValue>({
                 <path
                   d="M1 1.5L4 4.5L7 1.5"
                   stroke="#7C7C7C"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>
+            <div
+              ref={wrapperRef}
+              className={`${
+                pageSizeOpen
+                  ? "opacity-100 pointer-events-auto scale-100"
+                  : "opacity-0 pointer-events-none scale-90"
+              } shadow-2xl shadow-gray-200 p-[8px] border border-border z-10 absolute bottom-[calc(100%+7px)] right-0 bg-background h-auto w-auto rounded-md duration-200 transition-all ease-in-out `}
+            >
+              <button
+                className="hover:bg-background-accent w-full text-xs text-foreground-muted rounded-sm p-[10px] flex items-center justify-between"
+                onClick={() => handlePageSizeToggle(200)}
+              >
+                <CheckIcon
+                  className={
+                    pageSize === 200
+                      ? "size-4 mr-[10px] opacity-100"
+                      : "size-4 mr-[10px] opacity-0"
+                  }
+                />
+                200
+              </button>
+              <button
+                className="hover:bg-background-accent w-full text-xs text-foreground-muted rounded-sm p-[10px] flex items-center justify-between"
+                onClick={() => handlePageSizeToggle(100)}
+              >
+                <CheckIcon
+                  className={
+                    pageSize === 100
+                      ? "size-4 mr-[10px] opacity-100"
+                      : "size-4 mr-[10px] opacity-0"
+                  }
+                />
+                100
+              </button>
+              <button
+                className="hover:bg-background-accent w-full text-xs text-foreground-muted rounded-sm p-[10px] flex items-center justify-between"
+                onClick={() => handlePageSizeToggle(50)}
+              >
+                <CheckIcon
+                  className={
+                    pageSize === 50
+                      ? "size-4 mr-[10px] opacity-100"
+                      : "size-4 mr-[10px] opacity-0"
+                  }
+                />
+                50
+              </button>
+              <button
+                className="hover:bg-background-accent w-full text-xs text-foreground-muted rounded-sm p-[10px] flex items-center justify-between"
+                onClick={() => handlePageSizeToggle(25)}
+              >
+                <CheckIcon
+                  className={
+                    pageSize === 25
+                      ? "size-4 mr-[10px] opacity-100"
+                      : "size-4 mr-[10px] opacity-0"
+                  }
+                />
+                25
+              </button>
+            </div>
           </div>
           <button
             className="border border-border justify-center py-[5px] px-[15px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full"
@@ -202,7 +310,13 @@ export default function InvoiceTable<TData, TValue>({
             >
               <path
                 d="M1.9502 12.15L7.0502 7.05002L1.9502 1.95002"
-                stroke={data?.count ? "#7C7C7C" : "#CEBCCA"}
+                stroke={
+                  data?.count
+                    ? pageIndex >= Math.ceil(data.count / pageSize)
+                      ? "#CEBCCA"
+                      : "#7C7C7C"
+                    : "#7C7C7C"
+                }
                 strokeWidth="2.35"
                 strokeLinecap="round"
                 strokeLinejoin="round"
