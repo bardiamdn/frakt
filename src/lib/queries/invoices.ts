@@ -17,6 +17,7 @@ export const fetchInvoices = async ({
   const { data, count, error } = await supabase
     .from("invoices")
     .select("*", { count: "exact" })
+    .order("created_at", { ascending: false })
     .range(from, to);
 
   if (error) throw new Error(error.message);

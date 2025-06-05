@@ -3,7 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Database } from "@/types/supabase";
 import { Checkbox } from "@/components/ui/checkbox";
-import { table } from "console";
+import { useState } from "react";
+import { CheckIcon } from "lucide-react";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -32,141 +33,309 @@ export const columns: ColumnDef<Invoice>[] = [
     enableHiding: false,
   },
   {
+    id: "row_number",
+    header: ({ table, column }) => {
+      const sort = column.getIsSorted();
+      const sorted = column.getIsSorted();
+      return (
+        <div className="">
+          <button
+            className=" gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_241_101)">
+                <path
+                  d="M0.376715 2.99996L0.282715 3.79996H9.50592L9.60032 2.99996H0.376715Z"
+                  fill="#7C7C7C"
+                />
+                <path
+                  d="M0.0944 6.2L0 7H9.2236L9.3176 6.2H0.0944Z"
+                  fill="#7C7C7C"
+                />
+                <path
+                  d="M3.19519 0.199866L2.04199 9.79987H2.84679L3.99959 0.199866H3.19519Z"
+                  fill="#7C7C7C"
+                />
+                <path
+                  d="M5.91736 -0.1L4.76416 9.5H5.56896L6.72216 -0.1H5.91736Z"
+                  fill="#7C7C7C"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_241_101">
+                  <rect
+                    width="9.6"
+                    height="9.6"
+                    fill="white"
+                    transform="translate(0 0.200012)"
+                  />
+                </clipPath>
+              </defs>
+            </svg>
+
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8.40962 13.4148C8.21057 13.6992 7.78943 13.6992 7.59038 13.4148L5.05071 9.78673C4.81874 9.45534 5.05582 9 5.46033 9H10.5397C10.9442 9 11.1813 9.45534 10.9493 9.78673L8.40962 13.4148Z"
+                fill={sort !== "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+              />
+              <path
+                d="M8.40962 2.58517C8.21057 2.30081 7.78943 2.30081 7.59038 2.58517L5.05071 6.21327C4.81874 6.54466 5.05582 7 5.46033 7H10.5397C10.9442 7 11.1813 6.54466 10.9493 6.21327L8.40962 2.58517Z"
+                fill={sort === "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+              />
+            </svg>
+          </button>
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="font-normal text-center overflow-clip text-foreground-muted w-[50px]">
+        {row.index + 1}
+      </div>
+    ),
+    enableSorting: true,
+    enableHiding: false,
+    accessorFn: (row) => row.created_at,
+  },
+  {
     accessorKey: "invoice_id",
     header: ({ table }) => (
       <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
+          width="15"
+          height="14"
+          viewBox="0 0 15 14"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g clipPath="url(#clip0_133_141)">
+          <g clipPath="url(#clip0_133_153)">
             <path
-              d="M0.471016 3.49994L0.353516 4.49994H11.8825L12.0005 3.49994H0.471016Z"
-              fill="#7C7C7C"
-            />
-            <path
-              d="M0.118 7.5L0 8.5H11.5295L11.647 7.5H0.118Z"
-              fill="#7C7C7C"
-            />
-            <path
-              d="M3.99423 -0.000152588L2.55273 11.9998H3.55873L4.99973 -0.000152588H3.99423Z"
-              fill="#7C7C7C"
-            />
-            <path
-              d="M7.39707 -0.375L5.95557 11.625H6.96157L8.40307 -0.375H7.39707Z"
+              d="M12.2468 14C12.031 13.9994 11.8175 13.9561 11.6185 13.8725C11.4196 13.7888 11.2392 13.6667 11.0877 13.5129L7.50024 9.94642L3.91273 13.5153C3.68233 13.749 3.38685 13.9079 3.06481 13.9713C2.74277 14.0347 2.40911 13.9995 2.10732 13.8705C1.80254 13.7479 1.5418 13.5363 1.35917 13.2632C1.17653 12.9901 1.08049 12.6683 1.08357 12.3398V2.91667C1.08357 2.14312 1.39086 1.40125 1.93784 0.854272C2.48482 0.307291 3.22669 0 4.00023 0L11.0002 0C11.3833 0 11.7625 0.0754418 12.1164 0.222018C12.4703 0.368594 12.7918 0.583434 13.0626 0.854272C13.3335 1.12511 13.5483 1.44664 13.6949 1.80051C13.8415 2.15437 13.9169 2.53364 13.9169 2.91667V12.3398C13.9202 12.6681 13.8245 12.9897 13.6423 13.2627C13.4601 13.5357 13.1998 13.7475 12.8955 13.8705C12.69 13.9564 12.4695 14.0005 12.2468 14ZM4.00023 1.16667C3.53611 1.16667 3.09099 1.35104 2.7628 1.67923C2.43461 2.00742 2.25023 2.45254 2.25023 2.91667V12.3398C2.25002 12.437 2.27863 12.5321 2.33243 12.6131C2.38623 12.694 2.46281 12.7572 2.55251 12.7947C2.64221 12.8321 2.741 12.8422 2.83639 12.8235C2.93179 12.8048 3.01951 12.7583 3.08848 12.6898L7.0919 8.71092C7.2012 8.60227 7.34904 8.54129 7.50315 8.54129C7.65726 8.54129 7.80511 8.60227 7.9144 8.71092L11.9132 12.6887C11.9821 12.7572 12.0699 12.8037 12.1652 12.8223C12.2606 12.841 12.3594 12.831 12.4491 12.7935C12.5388 12.7561 12.6154 12.6929 12.6692 12.6119C12.723 12.531 12.7516 12.4359 12.7514 12.3387V2.91667C12.7514 2.45254 12.567 2.00742 12.2388 1.67923C11.9107 1.35104 11.4655 1.16667 11.0014 1.16667H4.00023Z"
               fill="#7C7C7C"
             />
           </g>
           <defs>
-            <clipPath id="clip0_133_141">
-              <rect width="12" height="12" fill="white" />
+            <clipPath id="clip0_133_153">
+              <rect
+                width="14"
+                height="14"
+                fill="white"
+                transform="translate(0.5)"
+              />
             </clipPath>
           </defs>
         </svg>
+
         <span>Invoice ID</span>
       </div>
     ),
     cell: ({ row }) => (
-      <div className=" font-normal text-center overflow-ellipsis text-foreground-muted">
+      <div className=" font-normal text-center overflow-clip text-foreground-muted">
         {row.getValue("invoice_id")}
       </div>
     ),
   },
   {
     accessorKey: "client_name",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
-        <svg
-          width="15"
-          height="16"
-          viewBox="0 0 15 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clipPath="url(#clip0_133_157)">
-            <path
-              d="M7.5 8C8.24168 8 8.9667 7.76541 9.58339 7.32588C10.2001 6.88635 10.6807 6.26164 10.9645 5.53074C11.2484 4.79983 11.3226 3.99556 11.1779 3.21964C11.0333 2.44372 10.6761 1.73098 10.1517 1.17157C9.6272 0.612165 8.95902 0.231202 8.23159 0.0768607C7.50416 -0.0774802 6.75016 0.00173314 6.06494 0.304484C5.37971 0.607234 4.79404 1.11992 4.38199 1.77772C3.96993 2.43552 3.75 3.20888 3.75 4C3.75099 5.06054 4.1464 6.07734 4.84945 6.82726C5.55249 7.57718 6.50574 7.99894 7.5 8ZM7.5 1.33334C7.99445 1.33334 8.4778 1.48973 8.88893 1.78275C9.30005 2.07577 9.62048 2.49224 9.8097 2.97951C9.99892 3.46678 10.0484 4.00296 9.95196 4.52024C9.8555 5.03753 9.6174 5.51268 9.26777 5.88562C8.91814 6.25856 8.47268 6.51254 7.98773 6.61543C7.50277 6.71832 7.00011 6.66551 6.54329 6.46368C6.08648 6.26185 5.69603 5.92005 5.42133 5.48152C5.14662 5.04299 5 4.52742 5 4C5 3.29276 5.26339 2.61448 5.73223 2.11438C6.20107 1.61429 6.83696 1.33334 7.5 1.33334Z"
-              fill="#7C7C7C"
-            />
-            <path
-              d="M7.5 9.33334C6.00867 9.33511 4.57889 9.96782 3.52435 11.0927C2.46982 12.2175 1.87665 13.7426 1.875 15.3333C1.875 15.5102 1.94085 15.6797 2.05806 15.8047C2.17527 15.9298 2.33424 16 2.5 16C2.66576 16 2.82473 15.9298 2.94194 15.8047C3.05915 15.6797 3.125 15.5102 3.125 15.3333C3.125 14.0957 3.58594 12.9087 4.40641 12.0335C5.22688 11.1583 6.33968 10.6667 7.5 10.6667C8.66032 10.6667 9.77312 11.1583 10.5936 12.0335C11.4141 12.9087 11.875 14.0957 11.875 15.3333C11.875 15.5102 11.9408 15.6797 12.0581 15.8047C12.1753 15.9298 12.3342 16 12.5 16C12.6658 16 12.8247 15.9298 12.9419 15.8047C13.0592 15.6797 13.125 15.5102 13.125 15.3333C13.1233 13.7426 12.5302 12.2175 11.4756 11.0927C10.4211 9.96782 8.99133 9.33511 7.5 9.33334Z"
-              fill="#7C7C7C"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_133_157">
-              <rect width="15" height="16" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-        <span>Name</span>
-      </div>
-    ),
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId)?.toString().toLowerCase() || "";
+      const b = rowB.getValue(columnId)?.toString().toLowerCase() || "";
+      return a.localeCompare(b);
+    },
+    header: ({ table, column }) => {
+      const sort = column.getIsSorted();
+      const sorted = column.getIsSorted();
+      return (
+        <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
+          <button
+            className=" gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <svg
+              width="15"
+              height="16"
+              viewBox="0 0 15 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_133_157)">
+                <path
+                  d="M7.5 8C8.24168 8 8.9667 7.76541 9.58339 7.32588C10.2001 6.88635 10.6807 6.26164 10.9645 5.53074C11.2484 4.79983 11.3226 3.99556 11.1779 3.21964C11.0333 2.44372 10.6761 1.73098 10.1517 1.17157C9.6272 0.612165 8.95902 0.231202 8.23159 0.0768607C7.50416 -0.0774802 6.75016 0.00173314 6.06494 0.304484C5.37971 0.607234 4.79404 1.11992 4.38199 1.77772C3.96993 2.43552 3.75 3.20888 3.75 4C3.75099 5.06054 4.1464 6.07734 4.84945 6.82726C5.55249 7.57718 6.50574 7.99894 7.5 8ZM7.5 1.33334C7.99445 1.33334 8.4778 1.48973 8.88893 1.78275C9.30005 2.07577 9.62048 2.49224 9.8097 2.97951C9.99892 3.46678 10.0484 4.00296 9.95196 4.52024C9.8555 5.03753 9.6174 5.51268 9.26777 5.88562C8.91814 6.25856 8.47268 6.51254 7.98773 6.61543C7.50277 6.71832 7.00011 6.66551 6.54329 6.46368C6.08648 6.26185 5.69603 5.92005 5.42133 5.48152C5.14662 5.04299 5 4.52742 5 4C5 3.29276 5.26339 2.61448 5.73223 2.11438C6.20107 1.61429 6.83696 1.33334 7.5 1.33334Z"
+                  fill="#7C7C7C"
+                />
+                <path
+                  d="M7.5 9.33334C6.00867 9.33511 4.57889 9.96782 3.52435 11.0927C2.46982 12.2175 1.87665 13.7426 1.875 15.3333C1.875 15.5102 1.94085 15.6797 2.05806 15.8047C2.17527 15.9298 2.33424 16 2.5 16C2.66576 16 2.82473 15.9298 2.94194 15.8047C3.05915 15.6797 3.125 15.5102 3.125 15.3333C3.125 14.0957 3.58594 12.9087 4.40641 12.0335C5.22688 11.1583 6.33968 10.6667 7.5 10.6667C8.66032 10.6667 9.77312 11.1583 10.5936 12.0335C11.4141 12.9087 11.875 14.0957 11.875 15.3333C11.875 15.5102 11.9408 15.6797 12.0581 15.8047C12.1753 15.9298 12.3342 16 12.5 16C12.6658 16 12.8247 15.9298 12.9419 15.8047C13.0592 15.6797 13.125 15.5102 13.125 15.3333C13.1233 13.7426 12.5302 12.2175 11.4756 11.0927C10.4211 9.96782 8.99133 9.33511 7.5 9.33334Z"
+                  fill="#7C7C7C"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_133_157">
+                  <rect width="15" height="16" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span className="flex items-center">
+              Name
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40962 13.4148C8.21057 13.6992 7.78943 13.6992 7.59038 13.4148L5.05071 9.78673C4.81874 9.45534 5.05582 9 5.46033 9H10.5397C10.9442 9 11.1813 9.45534 10.9493 9.78673L8.40962 13.4148Z"
+                  fill={sort === "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+                <path
+                  d="M8.40962 2.58517C8.21057 2.30081 7.78943 2.30081 7.59038 2.58517L5.05071 6.21327C4.81874 6.54466 5.05582 7 5.46033 7H10.5397C10.9442 7 11.1813 6.54466 10.9493 6.21327L8.40962 2.58517Z"
+                  fill={sort !== "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      );
+    },
     cell: ({ row }) => (
-      <div className=" font-normal text-center overflow-ellipsis">
+      <div className=" font-normal text-center overflow-clip">
         {row.getValue("client_name")}
       </div>
     ),
   },
   {
     accessorKey: "client_email",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
-        <svg
-          width="15"
-          height="16"
-          viewBox="0 0 15 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M13.8986 5.12312C13.3442 3.47562 12.0292 2.1625 10.3804 1.61C8.4917 0.976246 6.51357 0.976871 4.62357 1.61C2.97357 2.16312 1.65857 3.47687 1.10545 5.12437C0.464199 7.0325 0.464199 8.9675 1.10545 10.8756C1.65857 12.5237 2.9742 13.8375 4.62357 14.39C5.5692 14.7069 6.53732 14.8675 7.50232 14.8675C8.46732 14.8675 9.43545 14.7069 10.3804 14.3906C10.7073 14.2812 10.8848 13.9269 10.7748 13.5994C10.6648 13.2719 10.3111 13.0969 9.98357 13.205C8.35045 13.7519 6.6542 13.7519 5.02045 13.205C3.74045 12.7756 2.7192 11.7569 2.28982 10.4781C1.73795 8.83437 1.73795 7.16687 2.28982 5.5225C2.7192 4.24437 3.73982 3.225 5.02045 2.79562C6.6542 2.24875 8.3492 2.24875 9.98357 2.79562C11.2629 3.22437 12.2842 4.24312 12.7136 5.52125C13.1961 6.95937 13.2529 8.42625 12.8829 9.88312C12.7017 10.14 12.4029 10.2969 12.0867 10.2969C11.5754 10.2969 11.1554 9.90125 11.1167 9.40062C11.3879 8.30375 11.3404 7.1975 10.9723 6.105C10.7248 5.3675 10.1354 4.77937 9.39795 4.5325C8.13795 4.11062 6.86232 4.11062 5.60357 4.5325C4.86545 4.78 4.27732 5.3675 4.0292 6.105C3.6067 7.3625 3.6067 8.6375 4.0292 9.895C4.2767 10.6325 4.86545 11.22 5.60357 11.4675C6.23295 11.6781 6.8667 11.7837 7.50045 11.7837C8.1342 11.7837 8.76795 11.6781 9.39732 11.4675C9.79045 11.3356 10.1411 11.1075 10.4204 10.8119C10.8186 11.2669 11.4123 11.5469 12.0861 11.5469C12.8686 11.5469 13.6023 11.1287 14.0004 10.4544C14.0292 10.405 14.0511 10.3525 14.0654 10.2975C14.5261 8.56937 14.4692 6.82875 13.8967 5.12312H13.8986ZM9.00107 10.2825C7.99295 10.6212 7.01107 10.6212 6.00232 10.2825C5.63357 10.1587 5.3392 9.86562 5.21545 9.4975C4.8767 8.49 4.8767 7.51062 5.21545 6.50312C5.3392 6.135 5.63295 5.84125 6.00232 5.71812C7.01107 5.37937 7.99295 5.37937 9.0017 5.71812C9.37045 5.84187 9.66482 6.135 9.78795 6.50375C10.1267 7.51062 10.1267 8.49062 9.78795 9.49812C9.66482 9.86625 9.37045 10.1594 9.00107 10.2825Z"
-            fill="#7C7C7C"
-          />
-        </svg>
-        <span>Email</span>
-      </div>
-    ),
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId)?.toString().toLowerCase() || "";
+      const b = rowB.getValue(columnId)?.toString().toLowerCase() || "";
+      return a.localeCompare(b);
+    },
+    header: ({ table, column }) => {
+      const sort = column.getIsSorted();
+      const sorted = column.getIsSorted();
+      return (
+        <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
+          <button
+            className=" gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <svg
+              width="15"
+              height="16"
+              viewBox="0 0 15 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M13.8986 5.12312C13.3442 3.47562 12.0292 2.1625 10.3804 1.61C8.4917 0.976246 6.51357 0.976871 4.62357 1.61C2.97357 2.16312 1.65857 3.47687 1.10545 5.12437C0.464199 7.0325 0.464199 8.9675 1.10545 10.8756C1.65857 12.5237 2.9742 13.8375 4.62357 14.39C5.5692 14.7069 6.53732 14.8675 7.50232 14.8675C8.46732 14.8675 9.43545 14.7069 10.3804 14.3906C10.7073 14.2812 10.8848 13.9269 10.7748 13.5994C10.6648 13.2719 10.3111 13.0969 9.98357 13.205C8.35045 13.7519 6.6542 13.7519 5.02045 13.205C3.74045 12.7756 2.7192 11.7569 2.28982 10.4781C1.73795 8.83437 1.73795 7.16687 2.28982 5.5225C2.7192 4.24437 3.73982 3.225 5.02045 2.79562C6.6542 2.24875 8.3492 2.24875 9.98357 2.79562C11.2629 3.22437 12.2842 4.24312 12.7136 5.52125C13.1961 6.95937 13.2529 8.42625 12.8829 9.88312C12.7017 10.14 12.4029 10.2969 12.0867 10.2969C11.5754 10.2969 11.1554 9.90125 11.1167 9.40062C11.3879 8.30375 11.3404 7.1975 10.9723 6.105C10.7248 5.3675 10.1354 4.77937 9.39795 4.5325C8.13795 4.11062 6.86232 4.11062 5.60357 4.5325C4.86545 4.78 4.27732 5.3675 4.0292 6.105C3.6067 7.3625 3.6067 8.6375 4.0292 9.895C4.2767 10.6325 4.86545 11.22 5.60357 11.4675C6.23295 11.6781 6.8667 11.7837 7.50045 11.7837C8.1342 11.7837 8.76795 11.6781 9.39732 11.4675C9.79045 11.3356 10.1411 11.1075 10.4204 10.8119C10.8186 11.2669 11.4123 11.5469 12.0861 11.5469C12.8686 11.5469 13.6023 11.1287 14.0004 10.4544C14.0292 10.405 14.0511 10.3525 14.0654 10.2975C14.5261 8.56937 14.4692 6.82875 13.8967 5.12312H13.8986ZM9.00107 10.2825C7.99295 10.6212 7.01107 10.6212 6.00232 10.2825C5.63357 10.1587 5.3392 9.86562 5.21545 9.4975C4.8767 8.49 4.8767 7.51062 5.21545 6.50312C5.3392 6.135 5.63295 5.84125 6.00232 5.71812C7.01107 5.37937 7.99295 5.37937 9.0017 5.71812C9.37045 5.84187 9.66482 6.135 9.78795 6.50375C10.1267 7.51062 10.1267 8.49062 9.78795 9.49812C9.66482 9.86625 9.37045 10.1594 9.00107 10.2825Z"
+                fill="#7C7C7C"
+              />
+            </svg>
+            <span className="flex items-center">
+              Email
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40962 13.4148C8.21057 13.6992 7.78943 13.6992 7.59038 13.4148L5.05071 9.78673C4.81874 9.45534 5.05582 9 5.46033 9H10.5397C10.9442 9 11.1813 9.45534 10.9493 9.78673L8.40962 13.4148Z"
+                  fill={sort === "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+                <path
+                  d="M8.40962 2.58517C8.21057 2.30081 7.78943 2.30081 7.59038 2.58517L5.05071 6.21327C4.81874 6.54466 5.05582 7 5.46033 7H10.5397C10.9442 7 11.1813 6.54466 10.9493 6.21327L8.40962 2.58517Z"
+                  fill={sort !== "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      );
+    },
     cell: ({ row }) => (
-      <div className=" font-normal text-center overflow-ellipsis text-foreground-muted">
+      <div className=" font-normal text-center overflow-clip text-foreground-muted">
         {row.getValue("client_email")}
       </div>
     ),
   },
   {
     accessorKey: "due_date",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
-        <svg
-          width="15"
-          height="16"
-          viewBox="0 0 15 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clipPath="url(#clip0_133_168)">
-            <path
-              d="M10.625 6.69267C8.21313 6.69267 6.25 8.786 6.25 11.3593C6.25 13.918 8.21313 16 10.625 16C13.0369 16 15 13.9067 15 11.3333C15 8.77467 13.0369 6.69267 10.625 6.69267ZM10.625 14.6667C8.90187 14.6667 7.5 13.1827 7.5 11.3593C7.5 9.52133 8.90187 8.026 10.625 8.026C12.3481 8.026 13.75 9.51 13.75 11.3333C13.75 13.1713 12.3481 14.6667 10.625 14.6667ZM11.6919 11.5287C11.9363 11.7893 11.9363 12.2107 11.6919 12.4713C11.57 12.6013 11.41 12.6667 11.25 12.6667C11.09 12.6667 10.93 12.6013 10.8081 12.4713L10.1831 11.8047C10.0656 11.6793 10 11.51 10 11.3333V10C10 9.632 10.2794 9.33333 10.625 9.33333C10.9706 9.33333 11.25 9.632 11.25 10V11.0573L11.6919 11.5287ZM15 4.66667V6C15 6.368 14.7206 6.66667 14.375 6.66667C14.0294 6.66667 13.75 6.368 13.75 6V4.66667C13.75 3.564 12.9087 2.66667 11.875 2.66667H3.125C2.09125 2.66667 1.25 3.564 1.25 4.66667V5.33333H6.875C7.22 5.33333 7.5 5.632 7.5 6C7.5 6.368 7.22 6.66667 6.875 6.66667H1.25V12.6667C1.25 13.7693 2.09125 14.6667 3.125 14.6667H5.625C5.97 14.6667 6.25 14.9653 6.25 15.3333C6.25 15.7013 5.97 16 5.625 16H3.125C1.40188 16 0 14.5047 0 12.6667V4.66667C0 2.82867 1.40188 1.33333 3.125 1.33333H3.75V0.666667C3.75 0.298667 4.03 0 4.375 0C4.72 0 5 0.298667 5 0.666667V1.33333H10V0.666667C10 0.298667 10.2794 0 10.625 0C10.9706 0 11.25 0.298667 11.25 0.666667V1.33333H11.875C13.5981 1.33333 15 2.82867 15 4.66667Z"
-              fill="#7C7C7C"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_133_168">
-              <rect width="15" height="16" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-        <span>Due date</span>
-      </div>
-    ),
+    sortingFn: (rowA, rowB, columnId) => {
+      const dateA = new Date(rowA.getValue(columnId));
+      const dateB = new Date(rowB.getValue(columnId));
+      return dateA.getTime() - dateB.getTime();
+    },
+
+    header: ({ table, column }) => {
+      const sort = column.getIsSorted();
+      const sorted = column.getIsSorted();
+      return (
+        <div className="flex items-center justify-center text-foreground-muted">
+          <button
+            className=" gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <svg
+              width="15"
+              height="16"
+              viewBox="0 0 15 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_133_168)">
+                <path
+                  d="M10.625 6.69267C8.21313 6.69267 6.25 8.786 6.25 11.3593C6.25 13.918 8.21313 16 10.625 16C13.0369 16 15 13.9067 15 11.3333C15 8.77467 13.0369 6.69267 10.625 6.69267ZM10.625 14.6667C8.90187 14.6667 7.5 13.1827 7.5 11.3593C7.5 9.52133 8.90187 8.026 10.625 8.026C12.3481 8.026 13.75 9.51 13.75 11.3333C13.75 13.1713 12.3481 14.6667 10.625 14.6667ZM11.6919 11.5287C11.9363 11.7893 11.9363 12.2107 11.6919 12.4713C11.57 12.6013 11.41 12.6667 11.25 12.6667C11.09 12.6667 10.93 12.6013 10.8081 12.4713L10.1831 11.8047C10.0656 11.6793 10 11.51 10 11.3333V10C10 9.632 10.2794 9.33333 10.625 9.33333C10.9706 9.33333 11.25 9.632 11.25 10V11.0573L11.6919 11.5287ZM15 4.66667V6C15 6.368 14.7206 6.66667 14.375 6.66667C14.0294 6.66667 13.75 6.368 13.75 6V4.66667C13.75 3.564 12.9087 2.66667 11.875 2.66667H3.125C2.09125 2.66667 1.25 3.564 1.25 4.66667V5.33333H6.875C7.22 5.33333 7.5 5.632 7.5 6C7.5 6.368 7.22 6.66667 6.875 6.66667H1.25V12.6667C1.25 13.7693 2.09125 14.6667 3.125 14.6667H5.625C5.97 14.6667 6.25 14.9653 6.25 15.3333C6.25 15.7013 5.97 16 5.625 16H3.125C1.40188 16 0 14.5047 0 12.6667V4.66667C0 2.82867 1.40188 1.33333 3.125 1.33333H3.75V0.666667C3.75 0.298667 4.03 0 4.375 0C4.72 0 5 0.298667 5 0.666667V1.33333H10V0.666667C10 0.298667 10.2794 0 10.625 0C10.9706 0 11.25 0.298667 11.25 0.666667V1.33333H11.875C13.5981 1.33333 15 2.82867 15 4.66667Z"
+                  fill="#7C7C7C"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_133_168">
+                  <rect width="15" height="16" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span className="flex items-center">
+              Due date
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40962 13.4148C8.21057 13.6992 7.78943 13.6992 7.59038 13.4148L5.05071 9.78673C4.81874 9.45534 5.05582 9 5.46033 9H10.5397C10.9442 9 11.1813 9.45534 10.9493 9.78673L8.40962 13.4148Z"
+                  fill={sort === "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+                <path
+                  d="M8.40962 2.58517C8.21057 2.30081 7.78943 2.30081 7.59038 2.58517L5.05071 6.21327C4.81874 6.54466 5.05582 7 5.46033 7H10.5397C10.9442 7 11.1813 6.54466 10.9493 6.21327L8.40962 2.58517Z"
+                  fill={sort !== "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const rawDate = row.getValue("due_date") as string | null;
       const displayDate = rawDate ? rawDate.split("T")[0] : "—";
       return (
-        <div className="text-center overflow-ellipsis text-foreground-muted">
+        <div className="text-center overflow-clip text-foreground-muted">
           {displayDate}
         </div>
       );
@@ -174,39 +343,72 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clipPath="url(#clip0_133_174)">
-            <path
-              d="M8 0C3.86437 0 0.5 3.58867 0.5 8C0.5 12.4113 3.86437 16 8 16C12.1356 16 15.5 12.4113 15.5 8C15.5 3.58867 12.1356 0 8 0ZM8 14.6667C4.55375 14.6667 1.75 11.676 1.75 8C1.75 4.324 4.55375 1.33333 8 1.33333C11.4462 1.33333 14.25 4.324 14.25 8C14.25 11.676 11.4462 14.6667 8 14.6667ZM6.75 6.66667C6.75 6.91867 6.91937 7.132 7.1525 7.17333L9.05313 7.51133C9.89188 7.66 10.5 8.42667 10.5 9.33333C10.5 10.436 9.65875 11.3333 8.625 11.3333V12.6667H7.375V11.3333C6.34125 11.3333 5.5 10.436 5.5 9.33333H6.75C6.75 9.70133 7.03 10 7.375 10H8.625C8.97 10 9.25 9.70133 9.25 9.33333C9.25 9.08133 9.08062 8.868 8.8475 8.82667L6.94687 8.48867C6.10812 8.34 5.5 7.57333 5.5 6.66667C5.5 5.564 6.34125 4.66667 7.375 4.66667V3.33333H8.625V4.66667C9.65875 4.66667 10.5 5.564 10.5 6.66667H9.25C9.25 6.29933 8.97 6 8.625 6H7.375C7.03 6 6.75 6.29933 6.75 6.66667Z"
-              fill="#7C7C7C"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_133_174">
-              <rect
-                width="15"
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = parseFloat(rowA.getValue(columnId)) || 0;
+      const b = parseFloat(rowB.getValue(columnId)) || 0;
+      return a - b;
+    },
+
+    header: ({ column }) => {
+      const sort = column.getIsSorted();
+      const sorted = column.getIsSorted();
+      return (
+        <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
+          <button
+            className=" gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_133_174)">
+                <path
+                  d="M8 0C3.86437 0 0.5 3.58867 0.5 8C0.5 12.4113 3.86437 16 8 16C12.1356 16 15.5 12.4113 15.5 8C15.5 3.58867 12.1356 0 8 0ZM8 14.6667C4.55375 14.6667 1.75 11.676 1.75 8C1.75 4.324 4.55375 1.33333 8 1.33333C11.4462 1.33333 14.25 4.324 14.25 8C14.25 11.676 11.4462 14.6667 8 14.6667ZM6.75 6.66667C6.75 6.91867 6.91937 7.132 7.1525 7.17333L9.05313 7.51133C9.89188 7.66 10.5 8.42667 10.5 9.33333C10.5 10.436 9.65875 11.3333 8.625 11.3333V12.6667H7.375V11.3333C6.34125 11.3333 5.5 10.436 5.5 9.33333H6.75C6.75 9.70133 7.03 10 7.375 10H8.625C8.97 10 9.25 9.70133 9.25 9.33333C9.25 9.08133 9.08062 8.868 8.8475 8.82667L6.94687 8.48867C6.10812 8.34 5.5 7.57333 5.5 6.66667C5.5 5.564 6.34125 4.66667 7.375 4.66667V3.33333H8.625V4.66667C9.65875 4.66667 10.5 5.564 10.5 6.66667H9.25C9.25 6.29933 8.97 6 8.625 6H7.375C7.03 6 6.75 6.29933 6.75 6.66667Z"
+                  fill="#7C7C7C"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_133_174">
+                  <rect
+                    width="15"
+                    height="16"
+                    fill="white"
+                    transform="translate(0.5)"
+                  />
+                </clipPath>
+              </defs>
+            </svg>
+            <span className="flex items-center">
+              Amount
+              <svg
+                width="16"
                 height="16"
-                fill="white"
-                transform="translate(0.5)"
-              />
-            </clipPath>
-          </defs>
-        </svg>
-        <span>Amount</span>
-      </div>
-    ),
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40962 13.4148C8.21057 13.6992 7.78943 13.6992 7.59038 13.4148L5.05071 9.78673C4.81874 9.45534 5.05582 9 5.46033 9H10.5397C10.9442 9 11.1813 9.45534 10.9493 9.78673L8.40962 13.4148Z"
+                  fill={sort === "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+                <path
+                  d="M8.40962 2.58517C8.21057 2.30081 7.78943 2.30081 7.59038 2.58517L5.05071 6.21327C4.81874 6.54466 5.05582 7 5.46033 7H10.5397C10.9442 7 11.1813 6.54466 10.9493 6.21327L8.40962 2.58517Z"
+                  fill={sort !== "asc" && sorted ? "#7C7C7C" : "#CEBCCA"}
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const amount: number = row.getValue("amount");
       return (
-        <div className="text-lg font-normal text-center overflow-ellipsis">
+        <div className="text-lg font-normal text-center overflow-clip">
           ${amount}
         </div>
       );
@@ -214,23 +416,107 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: "paid",
-    header: () => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10.5 1.33333H10.3931C10.135 0.557333 9.44 0 8.625 0H7.375C6.56 0 5.865 0.557333 5.60687 1.33333H5.5C3.77688 1.33333 2.375 2.82867 2.375 4.66667V12.6667C2.375 14.5047 3.77688 16 5.5 16H10.5C12.2231 16 13.625 14.5047 13.625 12.6667V4.66667C13.625 2.82867 12.2231 1.33333 10.5 1.33333ZM12.375 12.6667C12.375 13.7693 11.5337 14.6667 10.5 14.6667H5.5C4.46625 14.6667 3.625 13.7693 3.625 12.6667V4.66667C3.625 3.564 4.46625 2.66667 5.5 2.66667H6.125C6.47 2.66667 6.75 2.368 6.75 2C6.75 1.632 7.03062 1.33333 7.375 1.33333H8.625C8.97 1.33333 9.25 1.63267 9.25 2C9.25 2.36733 9.52938 2.66667 9.875 2.66667H10.5C11.5337 2.66667 12.375 3.564 12.375 4.66667V12.6667ZM10.9419 6.77667C11.1863 7.03733 11.1863 7.45867 10.9419 7.71933L8.71563 10.094C8.35813 10.4753 7.88937 10.668 7.42062 10.668C6.97813 10.668 6.535 10.4973 6.18313 10.1533L5.07812 9.07267C4.82375 8.82333 4.80625 8.402 5.03938 8.13067C5.2725 7.86 5.66812 7.84133 5.9225 8.08933L7.0275 9.17C7.2575 9.39467 7.61062 9.38667 7.83187 9.15133L10.0581 6.77667C10.3025 6.516 10.6975 6.516 10.9419 6.77667Z"
-            fill="#7C7C7C"
-          />
-        </svg>
-        <span>Status</span>
-      </div>
-    ),
+    header: ({ column }) => {
+      const [open, setOpen] = useState(false);
+      const handleClick = (value: string) => {
+        column.setFilterValue(
+          value === column.getFilterValue() ? undefined : value
+        );
+        setOpen(false);
+      };
+
+      return (
+        <div className="relative flex items-center justify-center text-foreground-muted">
+          <button
+            className="relative group cursor-default gap-[5px] rounded-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center h-full px-[10px] py-[5px]"
+            onClick={() => setOpen(!open)}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.5 1.33333H10.3931C10.135 0.557333 9.44 0 8.625 0H7.375C6.56 0 5.865 0.557333 5.60687 1.33333H5.5C3.77688 1.33333 2.375 2.82867 2.375 4.66667V12.6667C2.375 14.5047 3.77688 16 5.5 16H10.5C12.2231 16 13.625 14.5047 13.625 12.6667V4.66667C13.625 2.82867 12.2231 1.33333 10.5 1.33333ZM12.375 12.6667C12.375 13.7693 11.5337 14.6667 10.5 14.6667H5.5C4.46625 14.6667 3.625 13.7693 3.625 12.6667V4.66667C3.625 3.564 4.46625 2.66667 5.5 2.66667H6.125C6.47 2.66667 6.75 2.368 6.75 2C6.75 1.632 7.03062 1.33333 7.375 1.33333H8.625C8.97 1.33333 9.25 1.63267 9.25 2C9.25 2.36733 9.52938 2.66667 9.875 2.66667H10.5C11.5337 2.66667 12.375 3.564 12.375 4.66667V12.6667ZM10.9419 6.77667C11.1863 7.03733 11.1863 7.45867 10.9419 7.71933L8.71563 10.094C8.35813 10.4753 7.88937 10.668 7.42062 10.668C6.97813 10.668 6.535 10.4973 6.18313 10.1533L5.07812 9.07267C4.82375 8.82333 4.80625 8.402 5.03938 8.13067C5.2725 7.86 5.66812 7.84133 5.9225 8.08933L7.0275 9.17C7.2575 9.39467 7.61062 9.38667 7.83187 9.15133L10.0581 6.77667C10.3025 6.516 10.6975 6.516 10.9419 6.77667Z"
+                fill="#7C7C7C"
+              />
+            </svg>
+            <span>Status</span>
+            <svg
+              className="group-hover:opacity-100 opacity-0 transition-opacity duration-200 ease-in-out"
+              width="8"
+              height="6"
+              viewBox="0 0 8 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1.5L4 4.5L7 1.5"
+                stroke="#7C7C7C"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <div
+            className={`${
+              open
+                ? "opacity-100 pointer-events-auto scale-100"
+                : "opacity-0 pointer-events-none scale-90"
+            } p-[8px] border border-border absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 bg-background h-auto w-auto rounded-md duration-200 transition-all ease-in-out `}
+          >
+            <button
+              className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
+              onClick={() => handleClick("paid")}
+            >
+              <CheckIcon
+                className={
+                  column.getFilterValue() === "paid"
+                    ? "size-6 mr-[10px] opacity-100"
+                    : "size-6 mr-[10px] opacity-0"
+                }
+              />
+              <span className="block bg-[#E1FCEF] py-[3px] px-[13px] rounded-full text-[#14804A] w-full">
+                Paid
+              </span>
+            </button>
+            <button
+              className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
+              onClick={() => handleClick("unpaid")}
+            >
+              <CheckIcon
+                className={
+                  column.getFilterValue() === "unpaid"
+                    ? "size-6 mr-[10px] opacity-100"
+                    : "size-6 mr-[10px] opacity-0"
+                }
+              />
+              <span className="block bg-[#F0F1FA] py-[3px] px-[13px] rounded-full text-[#4F5AED] w-full">
+                Unpaid
+              </span>
+            </button>
+            <button
+              className="hover:bg-background-accent w-full rounded-sm p-[10px] flex items-center justify-between"
+              onClick={() => handleClick("overdue")}
+            >
+              <CheckIcon
+                className={
+                  column.getFilterValue() === "overdue"
+                    ? "size-6 mr-[10px] opacity-100"
+                    : "size-6 mr-[10px] opacity-0"
+                }
+              />
+              <span className="bg-[#FAF0F2] block py-[3px] px-[13px] rounded-full text-[#D12953] w-full">
+                Overdue
+              </span>
+            </button>
+          </div>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const paid: boolean = row.getValue("paid");
       const dueDateRaw: string = row.getValue("due_date");
@@ -239,7 +525,7 @@ export const columns: ColumnDef<Invoice>[] = [
 
       if (paid) {
         return (
-          <div className="flex items-center justify-center text-center overflow-ellipsis text-foreground-muted">
+          <div className="flex items-center justify-center text-center overflow-clip text-foreground-muted">
             <span className="block bg-[#E1FCEF] py-[3px] px-[13px] rounded-full  text-[#14804A]">
               Paid
             </span>
@@ -247,7 +533,7 @@ export const columns: ColumnDef<Invoice>[] = [
         );
       } else if (!paid && dueDate >= now) {
         return (
-          <div className="flex items-center justify-center text-center overflow-ellipsis text-foreground-muted">
+          <div className="flex items-center justify-center text-center overflow-clip text-foreground-muted">
             <span className="block bg-[#F0F1FA] py-[3px] px-[13px] rounded-full  text-[#4F5AED]">
               Unpaid
             </span>
@@ -255,7 +541,7 @@ export const columns: ColumnDef<Invoice>[] = [
         );
       } else {
         return (
-          <div className="flex items-center justify-center text-center overflow-ellipsis text-foreground-muted">
+          <div className="flex items-center justify-center text-center overflow-clip text-foreground-muted">
             <span className="bg-[#FAF0F2] block py-[3px] px-[13px] rounded-full  text-[#D12953]">
               Overdue
             </span>
@@ -267,7 +553,7 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "description",
     header: () => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted w-[150px]">
         <svg
           width="15"
           height="16"
@@ -300,8 +586,10 @@ export const columns: ColumnDef<Invoice>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className=" font-normal text-center overflow-ellipsis text-foreground-muted">
-        {row.getValue("description")}
+      <div className="font-normal text-foreground-muted flex justify-center items-center ">
+        <span className="text-center overflow-clip w-[150px]">
+          {row.getValue("description")}
+        </span>
       </div>
     ),
   },
