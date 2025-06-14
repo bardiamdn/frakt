@@ -17,7 +17,7 @@ export default function LayoutWrapper({
   return (
     <main className="flex w-full">
       {!isAuthPage && <AppSidebar />}
-      <div className="w-full h-full">
+      <div className="w-full h-full relative overflow-hidden">
         {!isAuthPage && <Header />}
         <div className="bg-background-accent">{children}</div>
       </div>

@@ -117,9 +117,9 @@ export default function InvoiceTable<TData, TValue>({
   }, [pageSizeOpen]);
 
   return (
-    <div className="rounded-xl border md:min-h-[600px] bg-background flex flex-col justify-between ">
-      <Table className="w-full text-sm">
-        <TableHeader className="z-10">
+    <div className="rounded-xl border md:min-h-[600px] bg-background flex flex-col justify-between overflow-visible">
+      <Table className="w-full text-sm overflow-y-visible">
+        <TableHeader className="z-10 h-[50px]">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="px-[20px]">
               {headerGroup.headers.map((header) => (
@@ -151,7 +151,7 @@ export default function InvoiceTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} className="border-none px-[20px]">
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell className="py-[15px]" key={cell.id}>
+                  <TableCell className="relative py-[15px]" key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

@@ -99,7 +99,7 @@ export default function AppSidebar() {
                     </clipPath>
                   </defs>
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === ""
                       ? "text-sidebar-foreground"
@@ -108,7 +108,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Dashboard
-                </h3>
+                </span>
               </SidebarLink>
             </li>
             <li
@@ -136,7 +136,7 @@ export default function AppSidebar() {
                     </clipPath>
                   </defs>
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "clients"
                       ? "text-sidebar-foreground"
@@ -144,8 +144,8 @@ export default function AppSidebar() {
                     "font-medium"
                   )}
                 >
-                  Clients
-                </h3>
+                  Client Management
+                </span>
               </SidebarLink>
             </li>
             <li
@@ -173,7 +173,7 @@ export default function AppSidebar() {
                     </clipPath>
                   </defs>
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "invoices"
                       ? "text-sidebar-foreground"
@@ -182,7 +182,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Invoices
-                </h3>
+                </span>
               </SidebarLink>
             </li>
             <li
@@ -207,7 +207,7 @@ export default function AppSidebar() {
                     fill={currentPath === "payments" ? "#474747" : "#ACACAC"}
                   />
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "payments"
                       ? "text-sidebar-foreground"
@@ -216,7 +216,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Payments
-                </h3>
+                </span>
               </SidebarLink>
             </li>
             <li
@@ -248,7 +248,7 @@ export default function AppSidebar() {
                     </clipPath>
                   </defs>
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "projects"
                       ? "text-sidebar-foreground"
@@ -257,7 +257,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Projects
-                </h3>
+                </span>
               </SidebarLink>
             </li>
           </ul>
@@ -291,7 +291,7 @@ export default function AppSidebar() {
                     </clipPath>
                   </defs>
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "integrations"
                       ? "text-sidebar-foreground"
@@ -300,7 +300,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Integrations
-                </h3>
+                </span>
               </SidebarLink>
             </li>
             <li
@@ -321,7 +321,7 @@ export default function AppSidebar() {
                     fill={currentPath === "support" ? "#474747" : "#ACACAC"}
                   />
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "support"
                       ? "text-sidebar-foreground"
@@ -330,7 +330,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Support
-                </h3>
+                </span>
               </SidebarLink>
             </li>
             <li
@@ -351,7 +351,7 @@ export default function AppSidebar() {
                     fill={currentPath === "settings" ? "#474747" : "#ACACAC"}
                   />
                 </svg>
-                <h3
+                <span
                   className={cn(
                     currentPath === "settings"
                       ? "text-sidebar-foreground"
@@ -360,7 +360,7 @@ export default function AppSidebar() {
                   )}
                 >
                   Settings
-                </h3>
+                </span>
               </SidebarLink>
             </li>
           </ul>

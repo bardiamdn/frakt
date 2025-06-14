@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CustomButton } from "./custom-button";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -261,16 +262,16 @@ function SidebarTrigger({
   const { open, toggleSidebar } = useSidebar();
 
   return (
-    <button
-      className={cn(
-        "rounded-sm p-[10px] hover:bg-background/50 hover:text-accent-foreground dark:hover:bg-background/50",
-        className
-      )}
+    <CustomButton
+      // className={cn(
+      //   "rounded-sm p-[10px] hover:bg-background/50 hover:text-accent-foreground dark:hover:bg-background/50",
+      //   className
+      // )}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
       }}
-      {...props}
+      variant="icon"
     >
       {/* <PanelLeftIcon /> */}
       <svg
@@ -310,7 +311,7 @@ function SidebarTrigger({
         )}
       </svg>
       <span className="sr-only">Toggle Sidebar</span>
-    </button>
+    </CustomButton>
   );
 }
 

@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Database } from "@/types/supabase";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
-import { Check, CheckIcon } from "lucide-react";
+import { CheckIcon, MoreHorizontal } from "lucide-react";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -585,7 +585,7 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "description",
     header: () => (
-      <div className="flex items-center justify-center gap-[5px] text-foreground-muted w-[150px]">
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
         <svg
           width="15"
           height="16"
@@ -617,12 +617,100 @@ export const columns: ColumnDef<Invoice>[] = [
         <span>Description</span>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="relative pointer-default group font-normal text-foreground-muted flex justify-center items-center ">
-        <span className="text-center overflow-clip w-[150px]">
-          {row.getValue("description")}
-        </span>
+    cell: ({ row }) => {
+      const description: string = row.getValue("description");
+      return (
+        <div className="font-normal text-foreground-muted flex justify-center items-center ">
+          {description ? (
+            <div className="relative group hover:bg-background-accent p-[10px] rounded-sm">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.5 9.83459V9.75M12 9.83459V9.75M16.5 9.83459V9.75M14.4457 16.3043L12 21L9.75 16.3043H5.25C4.00736 16.3043 3 15.297 3 14.0543V5.25C3 4.00736 4.00736 3 5.25 3H18.75C19.9926 3 21 4.00736 21 5.25V14.0543C21 15.297 19.9926 16.3043 18.75 16.3043H14.4457Z"
+                  stroke="#7C7C7C"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="group-hover:stroke-foreground stroke-[##7c7c7c] "
+                />
+              </svg>
+
+              <div
+                className={`bg-background border border-border shadow-2xl shadow-gray-200/50 p-[10px] rounded-md w-[150px] h-[100px] absolute bottom-[calc(100%+5px)] left-1/2 -translate-x-1/2 group-hover:pointer-events-auto group-hover:opacity-100 pointer-events-none opacity-0 text-center z-10`}
+              >
+                <p className="break-words whitespace-normal block">
+                  {row.getValue("description")}
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: () => (
+      <div className="flex items-center justify-center gap-[5px] text-foreground-muted">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4.8001 8.00015C4.8001 8.8838 4.08375 9.60015 3.2001 9.60015C2.31644 9.60015 1.6001 8.8838 1.6001 8.00015C1.6001 7.11649 2.31644 6.40015 3.2001 6.40015C4.08375 6.40015 4.8001 7.11649 4.8001 8.00015Z"
+            stroke="#7C7C7C"
+            strokeWidth="1.33333"
+          />
+          <path
+            d="M9.6001 8.00015C9.6001 8.8838 8.88375 9.60015 8.0001 9.60015C7.11644 9.60015 6.4001 8.8838 6.4001 8.00015C6.4001 7.11649 7.11644 6.40015 8.0001 6.40015C8.88375 6.40015 9.6001 7.11649 9.6001 8.00015Z"
+            stroke="#7C7C7C"
+            strokeWidth="1.33333"
+          />
+          <path
+            d="M14.4001 8.00015C14.4001 8.8838 13.6838 9.60015 12.8001 9.60015C11.9164 9.60015 11.2001 8.8838 11.2001 8.00015C11.2001 7.11649 11.9164 6.40015 12.8001 6.40015C13.6838 6.40015 14.4001 7.11649 14.4001 8.00015Z"
+            stroke="#7C7C7C"
+            strokeWidth="1.33333"
+          />
+        </svg>
+
+        <span>Actions</span>
       </div>
     ),
+    cell: ({ row }) => {
+      {
+        return (
+          <div className="font-normal text-foreground-muted flex justify-center items-center ">
+            <button className="cursor-pointer group flex items-center justify-between gap-[10px] border border-border px-[10px] py-[5px] rounded-sm hover:bg-background-accent hover:text-foreground">
+              Edit
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                // className="ml-[8px]"
+              >
+                <path
+                  d="M10 7L15 12L10 17"
+                  stroke="#7C7C7C"
+                  strokeWidth="2.55"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="group-hover:stroke-foreground stroke-accent"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      }
+    },
   },
 ];

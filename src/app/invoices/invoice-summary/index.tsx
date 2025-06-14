@@ -1,35 +1,19 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
+import { NewInvocie } from "./new-invoice";
 
 export default function InvoiceSummary() {
   return (
     <div className="flex flex-col gap-4 px-[50px]">
       <div>
-        <h1 className="text-2xl font-semibold">Invoice Summary</h1>
+        <h1 className="text-2xl font-semibold">Invoices</h1>
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Summary of your invoice details
+            View, edit or delete your receipts.
           </div>
-          <Button className="rounded-sm text-button-foreground">
-            <svg
-              width="19"
-              height="19"
-              viewBox="0 0 19 19"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9.5 2.375L9.5 16.625M16.625 9.5L2.375 9.5"
-                stroke="white"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-            <span className="font-semibold">New</span>
-          </Button>
+          <NewInvocie />
         </div>
       </div>
-      <div className="flex gap-[20px] h-[150px]">
+      <div className="flex gap-[40px] h-[150px]">
         <Card className="w-full h-full flex flex-row">
           <CardContent className="w-full flex ">
             <div className="mr-[20px] border border-orange-border p-[5px] rounded-full h-full aspect-square">
