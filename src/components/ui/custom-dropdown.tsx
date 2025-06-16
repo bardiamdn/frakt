@@ -5,12 +5,14 @@ interface CustomDropdownProps {
   items: string[];
   label: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export const CustomDropdown = ({
   placeholder = "select one",
   label,
   items,
+  disabled = false,
 }: CustomDropdownProps) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
@@ -33,15 +35,21 @@ export const CustomDropdown = ({
   }, []);
 
   return (
-    <div className="flex flex-col items-start justify-center py-[30px] gap-[20px]">
-      <span>{label}</span>
+    <div className="flex flex-col items-start justify-center py-[15px] gap-[15px] ">
+      <span className={disabled ? "text-foreground-muted" : "text-foreground"}>
+        {label}
+      </span>
       <div
         ref={dropdownRef}
-        className="relative w-full rounded-full h-[50px] flex items-center justify-start "
+        className="relative w-full rounded-full h-[50px] flex items-center justify-start z-10 shadow-xs"
       >
         <button
           onClick={() => setOpen(!open)}
-          className="w-full h-full flex items-center justify-between group hover:text-foreground text-foreground-muted border hover:border-foreground border-border cursor-pointer pl-[20px] pr-[10px] rounded-full"
+          className={`w-full h-full flex items-center justify-between ${
+            disabled
+              ? null
+              : "cursor-pointer group hover:text-foreground hover:border-foreground"
+          }  text-foreground-muted border border-border pl-[20px] pr-[10px] rounded-full`}
         >
           {selected === null ? placeholder : items[selected]}
           <svg
@@ -57,13 +65,15 @@ export const CustomDropdown = ({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="group-hover:stroke-foreground stroke-foreground-muted"
+              className={`${
+                disabled ? null : "group-hover:stroke-foreground"
+              } stroke-foreground-muted`}
             />
           </svg>
         </button>
         <div
           className={`flex flex-col gap-[5px] absolute top-full left-0 w-full py-[25px] px-[15px] bg-background shadow-lg rounded-xl transition-all duration-200 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
-            open
+            open && !disabled
               ? "opacity-100 pointer-events-auto scale-100 translate-y-0"
               : "opacity-0 pointer-events-none scale-90 -translate-y-[10px]"
           }`}

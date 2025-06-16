@@ -3,11 +3,11 @@
 <table align="center">
   <tr>
     <td align="center" style="padding: 0 15px;">
-      <img src="./public/frakt-invoices.png" alt="Invoices Page" width="450" />
+      <img src="./public/invoices.png" alt="Invoices Page" width="450" />
       <div><small><b>Invoices Page</b></small></div>
     </td>
     <td align="center" style="padding: 0 15px;">
-      <img src="./public/frakt-client-portal.png" alt="Client Portal" width="450" />
+      <img src="./public/client-portal.png" alt="Client Portal" width="450" />
       <div><small><b>Client Portal</b></small></div>
     </td>
   </tr>

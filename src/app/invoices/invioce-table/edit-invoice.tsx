@@ -1,13 +1,33 @@
 "use client";
-import { Checkbox } from "@/components/ui/checkbox";
 import { CustomButton } from "@/components/ui/custom-button";
 import { CustomDropdown } from "@/components/ui/custom-dropdown";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { CalendarInput } from "./calendar";
+import { Database } from "@/types/supabase";
+import { useEffect, useRef, useState } from "react";
+import { CalendarInput } from "../invoice-summary/calendar";
+import { Checkbox } from "@radix-ui/react-checkbox";
 
-export const NewInvocie = () => {
+type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
+
+export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
+  const [invoiceData, setInvoiceData] = useState<Invoice>({
+    amount: 0,
+    client_email: "string",
+    client_id: 0,
+    client_name: "string",
+    created_at: "string",
+    currency: "string",
+    description: "string",
+    due_date: new Date(),
+    id: 0,
+    invoice_date: new Date(),
+    invoice_id: 0,
+    issued_by: "string",
+    last_update: "string",
+    paid: false,
+    paid_at: new Date(),
+    payment_method: "string",
+  });
   const [openSheet, setOpenSheet] = useState(false);
-  const [openSelectClient, setOpenSelectClient] = useState(false);
   const [paid, setPaid] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -34,35 +54,38 @@ export const NewInvocie = () => {
   };
 
   return (
-    <div className="">
-      <CustomButton
-        className="rounded-sm text-button-foreground"
-        onClick={() => setOpenSheet(true)}
+    <div className="font-normal text-foreground-muted flex justify-center items-center ">
+      <button
+        onClick={() => (setOpenSheet(true), setInvoiceData(row))}
+        className="relative cursor-pointer group flex items-center justify-between gap-[10px] border border-transparent hover:border-border px-[10px] py-[5px] rounded-sm hover:bg-background-accent hover:text-foreground"
       >
+        <span className="group-hover:trans">Edit</span>
         <svg
-          width="19"
-          height="19"
-          viewBox="0 0 19 19"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          // className="ml-[8px]"
         >
           <path
-            d="M9.5 2.375L9.5 16.625M16.625 9.5L2.375 9.5"
-            stroke="white"
-            strokeWidth="3"
+            d="M10 7L15 12L10 17"
+            stroke="#7C7C7C"
+            strokeWidth="2.55"
             strokeLinecap="round"
+            strokeLinejoin="round"
+            className="absolute top-1/2 right-0 translate-x-[-15px] stroke-foreground group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-in-out opacity-0 "
           />
         </svg>
-        <span className="font-semibold">New</span>
-      </CustomButton>
+      </button>
       <div
-        className={`fixed top-0 right-0 w-[500px] px-[30px] py-[35px] h-screen overflow-y-auto bg-background shadow-2xl z-50 transition-transform duration-500 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
+        className={`fixed top-0 right-0 w-[500px] px-[30px] py-[35px] h-screen overflow-y-auto bg-background z-50 transition-transform duration-500 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
           openSheet ? "translate-x-0" : "translate-x-full"
         }`}
         ref={sheetRef}
       >
         <div className="flex items-center justify-between mb-[30px]">
-          <h3>Invoices</h3>
+          <h3>Edit Invoice</h3>
           <CustomButton
             variant={"icon"}
             className="rounded-sm text-button-foreground hover:bg-background-accent"
@@ -122,8 +145,11 @@ export const NewInvocie = () => {
               </button>
             </div>
           </div>
-          <CalendarInput label="Invoice Date" />
-          <CalendarInput label="Due Date" />
+          <CalendarInput
+            value={invoiceData.invoice_date}
+            label="Invoice Date"
+          />
+          <CalendarInput value={invoiceData.due_date} label="Due Date" />
 
           <CustomDropdown
             items={["client name 1", "client name 2", "client name 3"]}
@@ -151,7 +177,12 @@ export const NewInvocie = () => {
           disabled={!paid}
         />
 
-        <CalendarInput label="Paid At" parentRef={sheetRef} disabled={!paid} />
+        <CalendarInput
+          value={invoiceData.paid_at}
+          label="Paid At"
+          parentRef={sheetRef}
+          disabled={!paid}
+        />
         <div className="flex justify-between items-center mt-[50px]">
           <CustomButton
             variant={"outline"}

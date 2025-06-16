@@ -4,7 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Database } from "@/types/supabase";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
-import { CheckIcon, MoreHorizontal } from "lucide-react";
+import { CheckIcon } from "lucide-react";
+import { EditInvoiceCell } from "./edit-invoice";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -684,33 +685,6 @@ export const columns: ColumnDef<Invoice>[] = [
         <span>Actions</span>
       </div>
     ),
-    cell: ({ row }) => {
-      {
-        return (
-          <div className="font-normal text-foreground-muted flex justify-center items-center ">
-            <button className="cursor-pointer group flex items-center justify-between gap-[10px] border border-border px-[10px] py-[5px] rounded-sm hover:bg-background-accent hover:text-foreground">
-              Edit
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                // className="ml-[8px]"
-              >
-                <path
-                  d="M10 7L15 12L10 17"
-                  stroke="#7C7C7C"
-                  strokeWidth="2.55"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="group-hover:stroke-foreground stroke-accent"
-                />
-              </svg>
-            </button>
-          </div>
-        );
-      }
-    },
+    cell: ({ row }) => EditInvoiceCell(row),
   },
 ];

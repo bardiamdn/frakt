@@ -10,11 +10,11 @@ const customButtonVariants = cva(
     variants: {
       variant: {
         default:
-          "px-[15px] py-[7px] bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "px-[15px] py-[7px] bg-primary text-secondary-foreground shadow-xs hover:bg-primary/90",
         outline:
           "px-[15px] py-[7px] border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
-          "px-[15px] py-[7px] bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "px-[15px] py-[7px] bg-background text-foreground shadow-xs hover:bg-secondary/80",
         icon: "rounded-sm p-[10px] hover:bg-background hover:text-accent-foreground dark:hover:bg-background/50",
         link: "text-primary underline-offset-4 hover:underline",
       },
