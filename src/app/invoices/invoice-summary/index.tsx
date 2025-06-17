@@ -3,13 +3,13 @@ import { NewInvocie } from "./new-invoice";
 
 export default function InvoiceSummary() {
   return (
-    <div className="flex flex-col gap-4 px-[50px]">
+    <div className="flex flex-col gap-4 px-[50px] py-[50px]">
       <div>
         <h1 className="text-2xl font-semibold">Invoices</h1>
         <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
+          <span className="text-sm text-foreground-muted">
             View, edit or delete your receipts.
-          </div>
+          </span>
           <NewInvocie />
         </div>
       </div>

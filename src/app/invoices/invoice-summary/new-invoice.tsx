@@ -2,14 +2,63 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { CustomButton } from "@/components/ui/custom-button";
 import { CustomDropdown } from "@/components/ui/custom-dropdown";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CalendarInput } from "./calendar";
+import { fetchAllClients } from "@/lib/queries/clients";
+import { Database } from "@/types/supabase";
+
+type Client = Database["public"]["Tables"]["clients"]["Row"];
 
 export const NewInvocie = () => {
   const [openSheet, setOpenSheet] = useState(false);
   const [openSelectClient, setOpenSelectClient] = useState(false);
   const [paid, setPaid] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const [clientNames, setClientsNames] = useState<
+    { value: string | null; id: number }[]
+  >([]);
+  const [clientEmails, setClientsEmails] = useState<
+    { value: string | null; id: number }[]
+  >([]);
+  const [selectedClient, setSelectedClient] = useState<Client>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<{
+    clientId: number;
+    clientName: string;
+    clientEmail: string;
+    invoiceId: string;
+    invoiceDate: Date;
+    dueDate: Date;
+    currency: string;
+    description: string;
+    paid: boolean;
+    paymentMethod: string;
+    paidAt: Date;
+  }>();
+
+  useEffect(() => {
+    const loadClients = async () => {
+      try {
+        const data = await fetchAllClients();
+        setClientsNames(
+          data.map((client) => ({ value: client.name, id: client.id }))
+        );
+        setClientsEmails(
+          data.map((client) => ({ value: client.email, id: client.id }))
+        );
+        console.log(data);
+      } catch (err: any) {
+        setError(err.message);
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadClients();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -36,7 +85,7 @@ export const NewInvocie = () => {
   return (
     <div className="">
       <CustomButton
-        className="rounded-sm text-button-foreground"
+        className="rounded-full text-base text-button-foreground"
         onClick={() => setOpenSheet(true)}
       >
         <svg
@@ -53,7 +102,7 @@ export const NewInvocie = () => {
             strokeLinecap="round"
           />
         </svg>
-        <span className="font-semibold">New</span>
+        <span className="font-semibold">New Invocie</span>
       </CustomButton>
       <div
         className={`fixed top-0 right-0 w-[500px] px-[30px] py-[35px] h-screen overflow-y-auto bg-background shadow-2xl z-50 transition-transform duration-500 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
@@ -86,7 +135,8 @@ export const NewInvocie = () => {
         </div>
         <div>
           <CustomDropdown
-            items={["client name 1", "client name 2", "client name 3"]}
+            items={clientNames}
+            // loading={loading}
             label="Client Name"
             placeholder="Select a client"
           />
@@ -126,7 +176,7 @@ export const NewInvocie = () => {
           <CalendarInput label="Due Date" />
 
           <CustomDropdown
-            items={["client name 1", "client name 2", "client name 3"]}
+            items={clientNames}
             label="Currency"
             placeholder="Select currency"
           />
@@ -145,7 +195,7 @@ export const NewInvocie = () => {
           Paid
         </div>
         <CustomDropdown
-          items={["client name 1", "client name 2", "client name 3"]}
+          items={clientNames}
           label="Payment Method"
           placeholder="Select currency"
           disabled={!paid}

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 interface CustomDropdownProps {
-  items: string[];
+  items: { value: string | null; id: number }[];
   label: string;
   placeholder?: string;
   disabled?: boolean;
@@ -51,7 +51,7 @@ export const CustomDropdown = ({
               : "cursor-pointer group hover:text-foreground hover:border-foreground"
           }  text-foreground-muted border border-border pl-[20px] pr-[10px] rounded-full`}
         >
-          {selected === null ? placeholder : items[selected]}
+          {selected === null ? placeholder : items[selected].value}
           <svg
             width="24"
             height="24"
@@ -72,7 +72,7 @@ export const CustomDropdown = ({
           </svg>
         </button>
         <div
-          className={`flex flex-col gap-[5px] absolute top-full left-0 w-full py-[25px] px-[15px] bg-background shadow-lg rounded-xl transition-all duration-200 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
+          className={`max-h-[300px] overflow-auto flex flex-col gap-[5px] absolute top-full left-0 w-full py-[25px] px-[15px] bg-background shadow-lg rounded-xl transition-all duration-200 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
             open && !disabled
               ? "opacity-100 pointer-events-auto scale-100 translate-y-0"
               : "opacity-0 pointer-events-none scale-90 -translate-y-[10px]"
@@ -84,7 +84,7 @@ export const CustomDropdown = ({
               className="bg-pink-200 py-[10px] px-[10px] hover:bg-accent rounded-md"
               onClick={() => setSelected(index)}
             >
-              {item}
+              {item.value}
             </button>
           ))}
         </div>
