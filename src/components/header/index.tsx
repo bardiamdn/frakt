@@ -43,7 +43,7 @@ export default function Header() {
             x2="8.39981"
             y2="24.1"
             stroke="#919397"
-            stroke-width="2.2"
+            strokeWidth="2.2"
           />
           <rect
             x="1.2001"
@@ -52,7 +52,7 @@ export default function Header() {
             height="22.6"
             rx="6.9"
             stroke="#919397"
-            stroke-width="2.2"
+            strokeWidth="2.2"
           />
         </svg>
       </SidebarTrigger> */}

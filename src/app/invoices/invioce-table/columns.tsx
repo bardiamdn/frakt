@@ -685,6 +685,6 @@ export const columns: ColumnDef<Invoice>[] = [
         <span>Actions</span>
       </div>
     ),
-    cell: ({ row }) => EditInvoiceCell(row),
+    cell: ({ row }) => EditInvoiceCell({ row: row.original }),
   },
 ];

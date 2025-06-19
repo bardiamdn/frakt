@@ -48,7 +48,6 @@ export const NewInvocie = () => {
         setClientsEmails(
           data.map((client) => ({ value: client.email, id: client.id }))
         );
-        console.log(data);
       } catch (err: any) {
         setError(err.message);
         console.log(err);

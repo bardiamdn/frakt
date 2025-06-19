@@ -5,6 +5,7 @@ import { Database } from "@/types/supabase";
 import { useEffect, useRef, useState } from "react";
 import { CalendarInput } from "../invoice-summary/calendar";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { fetchAllClients } from "@/lib/queries/clients";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -29,6 +30,14 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
   });
   const [openSheet, setOpenSheet] = useState(false);
   const [paid, setPaid] = useState(false);
+  const [clientNames, setClientsNames] = useState<
+    { value: string | null; id: number }[]
+  >([]);
+  const [clientEmails, setClientsEmails] = useState<
+    { value: string | null; id: number }[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,6 +61,27 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
       setPaid(checked);
     }
   };
+
+  useEffect(() => {
+    const loadClients = async () => {
+      try {
+        const data = await fetchAllClients();
+        setClientsNames(
+          data.map((client) => ({ value: client.name, id: client.id }))
+        );
+        setClientsEmails(
+          data.map((client) => ({ value: client.email, id: client.id }))
+        );
+      } catch (err: any) {
+        setError(err.message);
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadClients();
+  }, []);
 
   return (
     <div className="font-normal text-foreground-muted flex justify-center items-center ">
@@ -109,7 +139,7 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
         </div>
         <div>
           <CustomDropdown
-            items={["client name 1", "client name 2", "client name 3"]}
+            items={clientNames}
             label="Client Name"
             placeholder="Select a client"
           />
@@ -146,13 +176,13 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
             </div>
           </div>
           <CalendarInput
-            value={invoiceData.invoice_date}
+            value={invoiceData.invoice_date ?? undefined}
             label="Invoice Date"
           />
           <CalendarInput value={invoiceData.due_date} label="Due Date" />
 
           <CustomDropdown
-            items={["client name 1", "client name 2", "client name 3"]}
+            items={clientNames}
             label="Currency"
             placeholder="Select currency"
           />
@@ -171,14 +201,14 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
           Paid
         </div>
         <CustomDropdown
-          items={["client name 1", "client name 2", "client name 3"]}
+          items={clientNames}
           label="Payment Method"
           placeholder="Select currency"
           disabled={!paid}
         />
 
         <CalendarInput
-          value={invoiceData.paid_at}
+          value={invoiceData.paid_at ?? undefined}
           label="Paid At"
           parentRef={sheetRef}
           disabled={!paid}
