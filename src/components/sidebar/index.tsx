@@ -11,54 +11,60 @@ import SidebarLink from "./sidebar-link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Profile from "./profile";
 
 export default function AppSidebar() {
   const currentPath = usePathname().replace("/", "");
 
   return (
     <Sidebar className="">
-      <SidebarHeader className="flex justify-center items-center">
-        <Link href="/">
-          <svg
-            width="133"
-            height="58"
-            viewBox="0 0 133 58"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="5.05078"
-              y="25.2095"
-              width="30.3282"
-              height="6"
-              rx="3"
-              transform="rotate(-37.6683 5.05078 25.2095)"
-              fill="#A16ECA"
-            />
-            <rect
-              x="15"
-              y="27.3885"
-              width="17"
-              height="6"
-              rx="3"
-              transform="rotate(-37.6683 15 27.3885)"
-              fill="#A16ECA"
-            />
-            <rect
-              x="5"
-              y="15.3885"
-              width="17"
-              height="6"
-              rx="3"
-              transform="rotate(-37.6683 5 15.3885)"
-              fill="#A16ECA"
-            />
-            <path
-              d="M49.4168 22.1818V26.1591H36.5191V22.1818H49.4168ZM39.7435 44V20.1222C39.7435 18.6544 40.0465 17.4328 40.6526 16.4574C41.2681 15.482 42.092 14.7528 43.1242 14.2699C44.1564 13.7869 45.3022 13.5455 46.5617 13.5455C47.4519 13.5455 48.2426 13.6165 48.9339 13.7585C49.6251 13.9006 50.1365 14.0284 50.468 14.142L49.4452 18.1193C49.2274 18.053 48.9528 17.9867 48.6214 17.9205C48.2899 17.8447 47.9206 17.8068 47.5134 17.8068C46.557 17.8068 45.8799 18.0388 45.4822 18.5028C45.0939 18.9574 44.8998 19.6108 44.8998 20.4631V44H39.7435ZM53.4438 44V22.1818H58.4296V25.8182H58.6569C59.0546 24.5587 59.7364 23.5881 60.7023 22.9062C61.6777 22.215 62.7904 21.8693 64.0404 21.8693C64.3245 21.8693 64.6417 21.8835 64.9921 21.9119C65.3519 21.9309 65.6502 21.964 65.887 22.0114V26.7415C65.6692 26.6657 65.3235 26.5994 64.8501 26.5426C64.386 26.4763 63.9362 26.4432 63.5006 26.4432C62.5631 26.4432 61.7203 26.6468 60.9722 27.054C60.2336 27.4517 59.6512 28.0057 59.2251 28.7159C58.7989 29.4261 58.5858 30.2453 58.5858 31.1733V44H53.4438ZM75.191 44.4403C73.8084 44.4403 72.5631 44.1941 71.4552 43.7017C70.3567 43.1998 69.4855 42.4612 68.8415 41.4858C68.2071 40.5104 67.8898 39.3078 67.8898 37.8778C67.8898 36.6468 68.1171 35.6288 68.5716 34.8239C69.0262 34.0189 69.6465 33.375 70.4324 32.892C71.2184 32.4091 72.1038 32.0445 73.0887 31.7983C74.083 31.5426 75.1105 31.358 76.1711 31.2443C77.4495 31.1117 78.4864 30.9934 79.2819 30.8892C80.0773 30.7756 80.655 30.6051 81.0148 30.3778C81.3841 30.1411 81.5688 29.7765 81.5688 29.2841V29.1989C81.5688 28.1288 81.2516 27.3002 80.6171 26.7131C79.9826 26.1259 79.0688 25.8324 77.8756 25.8324C76.6162 25.8324 75.6171 26.107 74.8785 26.6562C74.1493 27.2055 73.6569 27.8542 73.4012 28.6023L68.6001 27.9205C68.9788 26.5947 69.6038 25.4867 70.4751 24.5966C71.3463 23.697 72.4116 23.0246 73.6711 22.5795C74.9305 22.125 76.3226 21.8977 77.8472 21.8977C78.8983 21.8977 79.9448 22.0208 80.9864 22.267C82.0281 22.5133 82.9798 22.9205 83.8415 23.4886C84.7033 24.0473 85.3946 24.8097 85.9154 25.7756C86.4457 26.7415 86.7109 27.9489 86.7109 29.3977V44H81.7677V41.0028H81.5972C81.2847 41.6089 80.8444 42.1771 80.2762 42.7074C79.7175 43.2282 79.012 43.6496 78.1597 43.9716C77.3169 44.2841 76.3273 44.4403 75.191 44.4403ZM76.5262 40.6619C77.5584 40.6619 78.4533 40.4583 79.2108 40.0511C79.9684 39.6345 80.5508 39.0852 80.958 38.4034C81.3747 37.7216 81.583 36.9782 81.583 36.1733V33.6023C81.422 33.7348 81.1474 33.858 80.7591 33.9716C80.3804 34.0852 79.9542 34.1847 79.4807 34.2699C79.0073 34.3551 78.5385 34.4309 78.0745 34.4972C77.6105 34.5634 77.208 34.6203 76.8671 34.6676C76.1001 34.7718 75.4135 34.9422 74.8074 35.179C74.2014 35.4157 73.7232 35.7472 73.3728 36.1733C73.0224 36.59 72.8472 37.1297 72.8472 37.7926C72.8472 38.7396 73.1929 39.4545 73.8841 39.9375C74.5754 40.4205 75.4561 40.6619 76.5262 40.6619ZM96.5688 37.1534L96.5546 30.946H97.3785L105.219 22.1818H111.228L101.583 32.9205H100.518L96.5688 37.1534ZM91.8813 44V14.9091H97.0233V44H91.8813ZM105.574 44L98.4722 34.071L101.938 30.4489L111.725 44H105.574ZM125.55 22.1818V26.1591H113.007V22.1818H125.55ZM116.104 16.9545H121.246V37.4375C121.246 38.1288 121.35 38.6591 121.558 39.0284C121.776 39.3883 122.06 39.6345 122.41 39.767C122.761 39.8996 123.149 39.9659 123.575 39.9659C123.897 39.9659 124.191 39.9422 124.456 39.8949C124.73 39.8475 124.939 39.8049 125.081 39.767L125.947 43.7869C125.673 43.8816 125.28 43.9858 124.768 44.0994C124.266 44.2131 123.651 44.2794 122.922 44.2983C121.634 44.3362 120.474 44.142 119.442 43.7159C118.409 43.2803 117.59 42.608 116.984 41.6989C116.388 40.7898 116.094 39.6534 116.104 38.2898V16.9545Z"
-              fill="#222222"
-            />
-          </svg>
-        </Link>
+      <SidebarHeader className="gap-[20px] mb-[15px]">
+        <div className="flex justify-center items-center">
+          <Link href="/">
+            <svg
+              width="133"
+              height="58"
+              viewBox="0 0 133 58"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="5.05078"
+                y="25.2095"
+                width="30.3282"
+                height="6"
+                rx="3"
+                transform="rotate(-37.6683 5.05078 25.2095)"
+                fill="#A16ECA"
+              />
+              <rect
+                x="15"
+                y="27.3885"
+                width="17"
+                height="6"
+                rx="3"
+                transform="rotate(-37.6683 15 27.3885)"
+                fill="#A16ECA"
+              />
+              <rect
+                x="5"
+                y="15.3885"
+                width="17"
+                height="6"
+                rx="3"
+                transform="rotate(-37.6683 5 15.3885)"
+                fill="#A16ECA"
+              />
+              <path
+                d="M49.4168 22.1818V26.1591H36.5191V22.1818H49.4168ZM39.7435 44V20.1222C39.7435 18.6544 40.0465 17.4328 40.6526 16.4574C41.2681 15.482 42.092 14.7528 43.1242 14.2699C44.1564 13.7869 45.3022 13.5455 46.5617 13.5455C47.4519 13.5455 48.2426 13.6165 48.9339 13.7585C49.6251 13.9006 50.1365 14.0284 50.468 14.142L49.4452 18.1193C49.2274 18.053 48.9528 17.9867 48.6214 17.9205C48.2899 17.8447 47.9206 17.8068 47.5134 17.8068C46.557 17.8068 45.8799 18.0388 45.4822 18.5028C45.0939 18.9574 44.8998 19.6108 44.8998 20.4631V44H39.7435ZM53.4438 44V22.1818H58.4296V25.8182H58.6569C59.0546 24.5587 59.7364 23.5881 60.7023 22.9062C61.6777 22.215 62.7904 21.8693 64.0404 21.8693C64.3245 21.8693 64.6417 21.8835 64.9921 21.9119C65.3519 21.9309 65.6502 21.964 65.887 22.0114V26.7415C65.6692 26.6657 65.3235 26.5994 64.8501 26.5426C64.386 26.4763 63.9362 26.4432 63.5006 26.4432C62.5631 26.4432 61.7203 26.6468 60.9722 27.054C60.2336 27.4517 59.6512 28.0057 59.2251 28.7159C58.7989 29.4261 58.5858 30.2453 58.5858 31.1733V44H53.4438ZM75.191 44.4403C73.8084 44.4403 72.5631 44.1941 71.4552 43.7017C70.3567 43.1998 69.4855 42.4612 68.8415 41.4858C68.2071 40.5104 67.8898 39.3078 67.8898 37.8778C67.8898 36.6468 68.1171 35.6288 68.5716 34.8239C69.0262 34.0189 69.6465 33.375 70.4324 32.892C71.2184 32.4091 72.1038 32.0445 73.0887 31.7983C74.083 31.5426 75.1105 31.358 76.1711 31.2443C77.4495 31.1117 78.4864 30.9934 79.2819 30.8892C80.0773 30.7756 80.655 30.6051 81.0148 30.3778C81.3841 30.1411 81.5688 29.7765 81.5688 29.2841V29.1989C81.5688 28.1288 81.2516 27.3002 80.6171 26.7131C79.9826 26.1259 79.0688 25.8324 77.8756 25.8324C76.6162 25.8324 75.6171 26.107 74.8785 26.6562C74.1493 27.2055 73.6569 27.8542 73.4012 28.6023L68.6001 27.9205C68.9788 26.5947 69.6038 25.4867 70.4751 24.5966C71.3463 23.697 72.4116 23.0246 73.6711 22.5795C74.9305 22.125 76.3226 21.8977 77.8472 21.8977C78.8983 21.8977 79.9448 22.0208 80.9864 22.267C82.0281 22.5133 82.9798 22.9205 83.8415 23.4886C84.7033 24.0473 85.3946 24.8097 85.9154 25.7756C86.4457 26.7415 86.7109 27.9489 86.7109 29.3977V44H81.7677V41.0028H81.5972C81.2847 41.6089 80.8444 42.1771 80.2762 42.7074C79.7175 43.2282 79.012 43.6496 78.1597 43.9716C77.3169 44.2841 76.3273 44.4403 75.191 44.4403ZM76.5262 40.6619C77.5584 40.6619 78.4533 40.4583 79.2108 40.0511C79.9684 39.6345 80.5508 39.0852 80.958 38.4034C81.3747 37.7216 81.583 36.9782 81.583 36.1733V33.6023C81.422 33.7348 81.1474 33.858 80.7591 33.9716C80.3804 34.0852 79.9542 34.1847 79.4807 34.2699C79.0073 34.3551 78.5385 34.4309 78.0745 34.4972C77.6105 34.5634 77.208 34.6203 76.8671 34.6676C76.1001 34.7718 75.4135 34.9422 74.8074 35.179C74.2014 35.4157 73.7232 35.7472 73.3728 36.1733C73.0224 36.59 72.8472 37.1297 72.8472 37.7926C72.8472 38.7396 73.1929 39.4545 73.8841 39.9375C74.5754 40.4205 75.4561 40.6619 76.5262 40.6619ZM96.5688 37.1534L96.5546 30.946H97.3785L105.219 22.1818H111.228L101.583 32.9205H100.518L96.5688 37.1534ZM91.8813 44V14.9091H97.0233V44H91.8813ZM105.574 44L98.4722 34.071L101.938 30.4489L111.725 44H105.574ZM125.55 22.1818V26.1591H113.007V22.1818H125.55ZM116.104 16.9545H121.246V37.4375C121.246 38.1288 121.35 38.6591 121.558 39.0284C121.776 39.3883 122.06 39.6345 122.41 39.767C122.761 39.8996 123.149 39.9659 123.575 39.9659C123.897 39.9659 124.191 39.9422 124.456 39.8949C124.73 39.8475 124.939 39.8049 125.081 39.767L125.947 43.7869C125.673 43.8816 125.28 43.9858 124.768 44.0994C124.266 44.2131 123.651 44.2794 122.922 44.2983C121.634 44.3362 120.474 44.142 119.442 43.7159C118.409 43.2803 117.59 42.608 116.984 41.6989C116.388 40.7898 116.094 39.6534 116.104 38.2898V16.9545Z"
+                fill="#222222"
+              />
+            </svg>
+          </Link>
+        </div>
+        {/* <div className="bg-pink-200"> */}
+        <Profile />
+        {/* </div> */}
       </SidebarHeader>
       <SidebarContent className="h-full flex flex-col px-[5px]">
         <SidebarGroup>
@@ -75,6 +81,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_416)">
                     <path
@@ -105,7 +112,7 @@ export default function AppSidebar() {
                     currentPath === ""
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Dashboard
@@ -115,7 +122,7 @@ export default function AppSidebar() {
           </ul>
         </SidebarGroup>
         <div className=" px-[5px] flex items-center gap-[10px]">
-          <span className="text-sm text-foreground-muted/70">Clients</span>
+          <span className="text-xs text-foreground-muted/70">Clients</span>
           <div className="h-[1px] w-full bg-foreground-muted/30"></div>
         </div>
         <SidebarGroup>
@@ -132,6 +139,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_427)">
                     <path
@@ -150,7 +158,7 @@ export default function AppSidebar() {
                     currentPath === "clients"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Clients
@@ -169,6 +177,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_427)">
                     <path
@@ -183,7 +192,7 @@ export default function AppSidebar() {
                     currentPath === "contacts"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Contacts
@@ -202,6 +211,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_427)">
                     <path
@@ -216,7 +226,7 @@ export default function AppSidebar() {
                     currentPath === "contracts"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Contracts
@@ -235,6 +245,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_427)">
                     <path
@@ -249,7 +260,7 @@ export default function AppSidebar() {
                     currentPath === "deals"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Deals
@@ -268,6 +279,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_427)">
                     <path
@@ -286,7 +298,7 @@ export default function AppSidebar() {
                     currentPath === "proposals"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Proposals
@@ -296,7 +308,7 @@ export default function AppSidebar() {
           </ul>
         </SidebarGroup>
         <div className=" px-[5px] flex items-center gap-[10px]">
-          <span className="text-sm text-foreground-muted/70">Finances</span>
+          <span className="text-xs text-foreground-muted/70">Finances</span>
           <div className="h-[1px] w-full bg-foreground-muted/30"></div>
         </div>
         <SidebarGroup>
@@ -313,8 +325,9 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
-                  <g clip-path="url(#clip0_332_262)">
+                  <g clipPath="url(#clip0_332_262)">
                     <path
                       d="M10 5C9.33696 5 8.70107 5.26339 8.23223 5.73223C7.76339 6.20107 7.5 6.83696 7.5 7.5V17.5C7.5 18.163 7.76339 18.7989 8.23223 19.2678C8.70107 19.7366 9.33696 20 10 20C10.663 20 11.2989 19.7366 11.7678 19.2678C12.2366 18.7989 12.5 18.163 12.5 17.5V7.5C12.5 6.83696 12.2366 6.20107 11.7678 5.73223C11.2989 5.26339 10.663 5 10 5Z"
                       fill={currentPath === "overview" ? "#474747" : "#ACACAC"}
@@ -334,7 +347,7 @@ export default function AppSidebar() {
                     currentPath === "overview"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Overview
@@ -353,6 +366,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_434)">
                     <path
@@ -367,7 +381,7 @@ export default function AppSidebar() {
                     currentPath === "invoices"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Invoices
@@ -386,6 +400,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <path
                     d="M11.6668 10C11.6668 10.9192 10.9193 11.6667 10.0001 11.6667C9.08098 11.6667 8.33348 10.9192 8.33348 10C8.33348 9.08083 9.08098 8.33333 10.0001 8.33333C10.9193 8.33333 11.6668 9.08083 11.6668 10ZM20.001 12.9567C20.001 14.6758 18.9176 16.2433 17.306 16.8575C16.1885 17.2842 15.1326 17.5 14.166 17.5C12.8043 17.5 11.5843 17.1675 10.4051 16.8458C9.28181 16.5392 8.22181 16.25 7.08348 16.25C5.77431 16.25 4.94848 16.3342 4.23431 16.5408C3.22931 16.83 2.17264 16.635 1.33431 16.0042C0.48681 15.3667 0.000976562 14.3933 0.000976562 13.3333V7.04333C0.000976562 5.32417 1.08348 3.75667 2.69514 3.1425C3.81264 2.71583 4.86931 2.5 5.83514 2.5C7.19681 2.5 8.41598 2.8325 9.59598 3.15417C10.7193 3.46083 11.7793 3.75 12.9176 3.75C14.226 3.75 15.0526 3.66583 15.7668 3.45917C16.7735 3.17 17.8301 3.365 18.6676 3.99583C19.5151 4.63333 20.001 5.60667 20.001 6.66667V12.9567ZM5.00098 11.6667C5.00098 11.2067 4.62764 10.8333 4.16764 10.8333C3.70764 10.8333 3.33431 11.2067 3.33431 11.6667C3.33431 12.1267 3.70764 12.5 4.16764 12.5C4.62764 12.5 5.00098 12.1267 5.00098 11.6667ZM5.00098 6.66667C5.00098 6.20667 4.62764 5.83333 4.16764 5.83333C3.70764 5.83333 3.33431 6.20667 3.33431 6.66667C3.33431 7.12667 3.70764 7.5 4.16764 7.5C4.62764 7.5 5.00098 7.12667 5.00098 6.66667ZM13.3343 10C13.3343 8.16167 11.8393 6.66667 10.001 6.66667C8.16264 6.66667 6.66764 8.16167 6.66764 10C6.66764 11.8383 8.16264 13.3333 10.001 13.3333C11.8393 13.3333 13.3343 11.8383 13.3343 10ZM16.6676 13.3333C16.6676 12.8733 16.2943 12.5 15.8343 12.5C15.3743 12.5 15.001 12.8733 15.001 13.3333C15.001 13.7933 15.3743 14.1667 15.8343 14.1667C16.2943 14.1667 16.6676 13.7933 16.6676 13.3333ZM16.6676 8.33333C16.6676 7.87333 16.2943 7.5 15.8343 7.5C15.3743 7.5 15.001 7.87333 15.001 8.33333C15.001 8.79333 15.3743 9.16667 15.8343 9.16667C16.2943 9.16667 16.6676 8.79333 16.6676 8.33333Z"
@@ -398,7 +413,7 @@ export default function AppSidebar() {
                     currentPath === "income"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Income
@@ -417,6 +432,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <path
                     d="M6.66667 0C5.562 0.00132321 4.50296 0.440735 3.72185 1.22185C2.94073 2.00296 2.50132 3.062 2.5 4.16667V19.1667C2.50012 19.3182 2.54157 19.4669 2.6199 19.5967C2.69823 19.7264 2.81047 19.8324 2.94453 19.9031C3.07859 19.9738 3.22941 20.0066 3.38073 19.998C3.53206 19.9894 3.67817 19.9397 3.80333 19.8542L5.55833 18.655L7.31333 19.8542C7.45199 19.9491 7.61612 19.9999 7.78417 19.9999C7.95222 19.9999 8.11634 19.9491 8.255 19.8542L10.005 18.655L11.755 19.8542C11.8937 19.9493 12.058 20.0002 12.2262 20.0002C12.3945 20.0002 12.5588 19.9493 12.6975 19.8542L14.4475 18.6558L16.1975 19.8533C16.3226 19.9386 16.4685 19.9881 16.6197 19.9966C16.7708 20.0052 16.9214 19.9724 17.0553 19.9018C17.1892 19.8312 17.3013 19.7255 17.3797 19.596C17.458 19.4664 17.4996 19.318 17.5 19.1667V4.16667C17.4987 3.062 17.0593 2.00296 16.2782 1.22185C15.497 0.440735 14.438 0.00132321 13.3333 0L6.66667 0ZM11.6667 11.6667H6.66667C6.44565 11.6667 6.23369 11.5789 6.07741 11.4226C5.92113 11.2663 5.83333 11.0543 5.83333 10.8333C5.83333 10.6123 5.92113 10.4004 6.07741 10.2441C6.23369 10.0878 6.44565 10 6.66667 10H11.6667C11.8877 10 12.0996 10.0878 12.2559 10.2441C12.4122 10.4004 12.5 10.6123 12.5 10.8333C12.5 11.0543 12.4122 11.2663 12.2559 11.4226C12.0996 11.5789 11.8877 11.6667 11.6667 11.6667ZM14.1667 7.5C14.1667 7.72101 14.0789 7.93297 13.9226 8.08926C13.7663 8.24554 13.5543 8.33333 13.3333 8.33333H6.66667C6.44565 8.33333 6.23369 8.24554 6.07741 8.08926C5.92113 7.93297 5.83333 7.72101 5.83333 7.5C5.83333 7.27899 5.92113 7.06702 6.07741 6.91074C6.23369 6.75446 6.44565 6.66667 6.66667 6.66667H13.3333C13.5543 6.66667 13.7663 6.75446 13.9226 6.91074C14.0789 7.06702 14.1667 7.27899 14.1667 7.5Z"
@@ -429,7 +445,7 @@ export default function AppSidebar() {
                     currentPath === "expenses"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Expenses
@@ -439,7 +455,7 @@ export default function AppSidebar() {
           </ul>
         </SidebarGroup>
         <div className=" px-[5px] flex items-center gap-[10px]">
-          <span className="text-sm text-foreground-muted/70">Projects</span>
+          <span className="text-xs text-foreground-muted/70">Projects</span>
           <div className="h-[1px] w-full bg-foreground-muted/30"></div>
         </div>
         <SidebarGroup>
@@ -456,6 +472,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_447)">
                     <path
@@ -478,7 +495,7 @@ export default function AppSidebar() {
                     currentPath === "projects"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Projects
@@ -497,6 +514,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_455)">
                     <path
@@ -511,7 +529,7 @@ export default function AppSidebar() {
                     currentPath === "tasks"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Tasks
@@ -530,6 +548,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_455)">
                     <path
@@ -544,10 +563,10 @@ export default function AppSidebar() {
                     currentPath === "tasks"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
-                  Tasks
+                  Time Tracking
                 </span>
               </SidebarLink>
             </li>
@@ -563,6 +582,7 @@ export default function AppSidebar() {
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
                 >
                   <g clipPath="url(#clip0_133_455)">
                     <path
@@ -583,7 +603,7 @@ export default function AppSidebar() {
                     currentPath === "integrations"
                       ? "text-sidebar-foreground"
                       : "text-sidebar-foreground-muted",
-                    "font-medium"
+                    "font-medium text-sm "
                   )}
                 >
                   Integrations
@@ -593,8 +613,8 @@ export default function AppSidebar() {
           </ul>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="h-[90px] p-[15px]">
-        <div className="relative w-full h-full">
+      <SidebarFooter className="h-[90px] p-[15px] border-t border-border">
+        <Link href={"/pricing"} className="relative w-full h-full">
           <Image
             src={"/upgrade-bg.png"}
             alt="purple and orange gradient"
@@ -608,6 +628,7 @@ export default function AppSidebar() {
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="size-6"
             >
               <path
                 d="M14.8234 2.3999L16.6537 7.34611L21.5999 9.17637L16.6537 11.0066L14.8234 15.9528L12.9932 11.0066L8.04696 9.17637L12.9932 7.34611L14.8234 2.3999Z"
@@ -622,11 +643,11 @@ export default function AppSidebar() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="text-secondary-foreground text-xl font-medium">
+            <span className="text-secondary-foreground text-xl font-medium ">
               Start Free Trial
             </span>
           </div>
-        </div>
+        </Link>
       </SidebarFooter>
     </Sidebar>
   );

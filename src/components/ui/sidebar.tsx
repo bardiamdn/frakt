@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { PanelLeftIcon } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -263,10 +262,6 @@ function SidebarTrigger({
 
   return (
     <CustomButton
-      // className={cn(
-      //   "rounded-sm p-[10px] hover:bg-background/50 hover:text-accent-foreground dark:hover:bg-background/50",
-      //   className
-      // )}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -423,7 +418,7 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sidebar-group"
       data-sidebar="group"
-      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
+      className={cn("relative flex w-full min-w-0 flex-col px-2", className)}
       {...props}
     />
   );

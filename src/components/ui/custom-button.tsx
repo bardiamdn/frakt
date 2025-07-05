@@ -15,7 +15,7 @@ const customButtonVariants = cva(
           "px-[15px] py-[7px] border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "px-[15px] py-[7px] bg-background text-foreground shadow-xs hover:bg-secondary/80",
-        icon: "rounded-sm p-[10px] hover:bg-background hover:text-accent-foreground dark:hover:bg-background/50",
+        icon: "rounded-sm p-[10px] hover:bg-background/40 hover:text-accent-foreground dark:hover:bg-background/50 hover:shadow-sm/10",
         link: "text-primary underline-offset-4 hover:underline",
       },
     },

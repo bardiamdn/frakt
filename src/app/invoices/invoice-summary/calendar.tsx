@@ -64,13 +64,12 @@ export const CalendarInput = ({
       </span>
       <div
         ref={containerRef}
-        className="relative w-full rounded-full border border-border h-[50px] flex items-center justify-start shadow-xs"
+        className="text-foreground-muted relative w-full rounded-full border border-border h-[50px] flex items-center justify-start shadow-xs"
       >
         <input
-          placeholder="IN-56213"
-          className={`w-full h-full rounded-full px-[20px] ${
-            disabled ? "text-foreground-muted" : "text-foreground"
-          }`}
+          className={`w-full h-full rounded-full px-[20px]
+            "text-foreground-muted"
+          `}
           value={date?.toLocaleDateString() || ""}
           readOnly
           onClick={() => setCalendarIsOpen(!calendarIsOpen)}

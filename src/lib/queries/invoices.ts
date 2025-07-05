@@ -62,3 +62,22 @@ export const fetchInvoices = async ({
 
   return { data: data ?? [], count };
 };
+
+export const insertInvoice = async (invoice: Invoice) => {
+
+  const { data, error } = await supabase
+    .from("invoices")
+    .insert(invoice)
+    .select();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+};
+
+export const fetchInvoiceSummary = async () => {
+  const res = await fetch("/api/invoices/summary");
+  console.log("data from fetchINvoicesSummary", res)
+  if (!res.ok) throw new Error("Failed to fetch summary");
+  return res.json();
+};

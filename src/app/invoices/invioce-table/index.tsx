@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CheckIcon } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -63,6 +64,24 @@ export default function InvoiceTable<TData, TValue>({
         statusFilters: statusFilter,
       }),
   });
+
+  // useEffect(() => {
+  //   const {
+  //     data: { subscription },
+  //   } = supabase.auth.onAuthStateChange((event, session) => {
+  //     console.log("Auth event:", event, "session:", session);
+  //     // you can store session in state or trigger logic when session becomes non-null
+  //   });
+  //   // On mount, you can also immediately check:
+  //   supabase.auth.getSession().then(({ data }) => {
+  //     console.log("Initial session:", data.session);
+  //   });
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, []);
+
+  // const { data, error } = await supabase.auth.getSession()
 
   const [sorting, setSorting] = useState<SortingState>([
     {

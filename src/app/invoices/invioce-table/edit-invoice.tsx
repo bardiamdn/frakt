@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { CalendarInput } from "../invoice-summary/calendar";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { fetchAllClients } from "@/lib/queries/clients";
+import { paymentMethods } from "@/data/payment-method";
+import { currencyOptions } from "@/data/currencies";
+import { useQuery } from "@tanstack/react-query";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
@@ -18,26 +21,22 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
     created_at: "string",
     currency: "string",
     description: "string",
-    due_date: new Date(),
+    due_date: new Date().toISOString(),
     id: 0,
-    invoice_date: new Date(),
+    invoice_date: new Date().toISOString(),
     invoice_id: 0,
     issued_by: "string",
     last_update: "string",
     paid: false,
-    paid_at: new Date(),
+    paid_at: new Date().toISOString(),
     payment_method: "string",
   });
+  const [selectedClient, setSelectedClient] = useState<{
+    value: string | null;
+    id: number;
+  } | null>(null);
   const [openSheet, setOpenSheet] = useState(false);
   const [paid, setPaid] = useState(false);
-  const [clientNames, setClientsNames] = useState<
-    { value: string | null; id: number }[]
-  >([]);
-  const [clientEmails, setClientsEmails] = useState<
-    { value: string | null; id: number }[]
-  >([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,31 +61,74 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
     }
   };
 
+  const {
+    data: clients,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["clients"],
+    queryFn: fetchAllClients,
+  });
+
+  const clientNames =
+    clients?.map((client) => ({
+      value: client.name,
+      id: client.id,
+    })) || [];
+
   useEffect(() => {
-    const loadClients = async () => {
-      try {
-        const data = await fetchAllClients();
-        setClientsNames(
-          data.map((client) => ({ value: client.name, id: client.id }))
-        );
-        setClientsEmails(
-          data.map((client) => ({ value: client.email, id: client.id }))
-        );
-      } catch (err: any) {
-        setError(err.message);
-        console.log(err);
-      } finally {
-        setLoading(false);
+    const backdrop = document.querySelector(
+      ".sheet-backdrop"
+    ) as HTMLElement | null;
+
+    if (openSheet) {
+      document.body.style.overflow = "hidden";
+
+      if (backdrop) {
+        backdrop.style.display = "block"; // show backdrop
+        backdrop.addEventListener("click", () => setOpenSheet(false));
+      }
+    } else {
+      document.body.style.overflow = "";
+
+      if (backdrop) {
+        backdrop.style.display = "none"; // hide backdrop
+        backdrop.removeEventListener("click", () => setOpenSheet(false));
+      }
+    }
+
+    // Cleanup if component unmounts or openSheet changes
+    return () => {
+      document.body.style.overflow = "";
+
+      if (backdrop) {
+        backdrop.style.display = "none";
+        backdrop.removeEventListener("click", () => setOpenSheet(false));
       }
     };
+  }, [openSheet]);
 
-    loadClients();
-  }, []);
+  const updateClientInfo = (item: { value: string | null; id: number }) => {
+    const client = clients?.find((e) => e.id === item.id);
+    setInvoiceData((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        clientId: item.id,
+        clientName: item.value ?? "",
+        clientEmail: client?.email ?? "",
+      };
+    });
+  };
 
   return (
     <div className="font-normal text-foreground-muted flex justify-center items-center ">
       <button
-        onClick={() => (setOpenSheet(true), setInvoiceData(row))}
+        onClick={() => {
+          setOpenSheet(true);
+          setInvoiceData(row);
+          console.log(row);
+        }}
         className="relative cursor-pointer group flex items-center justify-between gap-[10px] border border-transparent hover:border-border px-[10px] py-[5px] rounded-sm hover:bg-background-accent hover:text-foreground"
       >
         <span className="group-hover:trans">Edit</span>
@@ -109,7 +151,7 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
         </svg>
       </button>
       <div
-        className={`fixed top-0 right-0 w-[500px] px-[30px] py-[35px] h-screen overflow-y-auto bg-background z-50 transition-transform duration-500 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
+        className={`fixed top-0 right-0 w-[500px] min-w-[350px] max-w-screen px-[30px] py-[35px] h-screen overflow-y-auto bg-background z-50 transition-transform duration-500 ease-[cubic-bezier(0.83, 0, 0.17, 1)] ${
           openSheet ? "translate-x-0" : "translate-x-full"
         }`}
         ref={sheetRef}
@@ -140,6 +182,11 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
         <div>
           <CustomDropdown
             items={clientNames}
+            value={invoiceData.client_name || "Select a client"}
+            onChange={(item, index) => {
+              setSelectedClient(item);
+              updateClientInfo(item);
+            }}
             label="Client Name"
             placeholder="Select a client"
           />
@@ -148,13 +195,15 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
             <input
               disabled
               placeholder="Email@email.com"
+              value={invoiceData.client_email}
+              readOnly
               className="w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs"
             />
           </div>
           <div className="flex flex-col items-start justify-center py-[15px] gap-[15px]">
             <span className="text-foreground-muted">Invoice ID</span>
             <div className="relative w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs">
-              <input disabled placeholder="IN-56213" />
+              <input disabled placeholder={invoiceData.invoice_id.toString()} />
               <button className="group rounded-full bg-icon-background cursor-pointer h-[40px] w-[40px] flex items-center justify-center absolute top-1/2 right-0 -translate-y-1/2 translate-x-[-5px]">
                 <svg
                   width="16"
@@ -176,13 +225,32 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
             </div>
           </div>
           <CalendarInput
-            value={invoiceData.invoice_date ?? undefined}
+            value={
+              invoiceData.invoice_date
+                ? new Date(invoiceData.invoice_date)
+                : undefined
+            }
             label="Invoice Date"
           />
-          <CalendarInput value={invoiceData.due_date} label="Due Date" />
+          <CalendarInput
+            value={
+              invoiceData.due_date ? new Date(invoiceData.due_date) : undefined
+            }
+            label="Due Date"
+          />
 
           <CustomDropdown
-            items={clientNames}
+            value={invoiceData.currency ?? ""}
+            onChange={(item, index) => {
+              setInvoiceData((prev) => {
+                if (!prev) return prev;
+                return {
+                  ...prev,
+                  currency: item.value ?? "",
+                };
+              });
+            }}
+            items={currencyOptions}
             label="Currency"
             placeholder="Select currency"
           />
@@ -197,18 +265,33 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
           </div>
         </div>
         <div className="flex items-center justify-start py-[30px] gap-[10px]">
-          <Checkbox checked={paid} onCheckedChange={handleCheckedChange} />
+          <Checkbox
+            checked={invoiceData.paid}
+            onCheckedChange={handleCheckedChange}
+          />
           Paid
         </div>
         <CustomDropdown
-          items={clientNames}
+          value={invoiceData.payment_method ?? ""}
+          onChange={(item, index) => {
+            setInvoiceData((prev) => {
+              if (!prev) return prev;
+              return {
+                ...prev,
+                payment_method: item.value ?? "",
+              };
+            });
+          }}
+          items={paymentMethods}
           label="Payment Method"
           placeholder="Select currency"
           disabled={!paid}
         />
 
         <CalendarInput
-          value={invoiceData.paid_at ?? undefined}
+          value={
+            invoiceData.due_date ? new Date(invoiceData.due_date) : undefined
+          }
           label="Paid At"
           parentRef={sheetRef}
           disabled={!paid}

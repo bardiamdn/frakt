@@ -1,7 +1,19 @@
+"use client";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "../../../components/ui/card";
 import { NewInvocie } from "./new-invoice";
+import { fetchInvoiceSummary } from "@/lib/queries/invoices";
 
 export default function InvoiceSummary() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["invoiceSummary"],
+    queryFn: fetchInvoiceSummary,
+    refetchOnWindowFocus: true,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  if (error) return <div>Error loading summary</div>;
+
   return (
     <div className="flex flex-col gap-4 px-[50px] py-[50px]">
       <div>
@@ -13,7 +25,7 @@ export default function InvoiceSummary() {
           <NewInvocie />
         </div>
       </div>
-      <div className="flex gap-[40px] h-[150px]">
+      <div className="flex md:flex-row flex-col lg:gap-[40px] gap-[20px] md:h-[150px] h-auto">
         <Card className="w-full h-full flex flex-row">
           <CardContent className="w-full flex ">
             <div className="mr-[20px] border border-orange-border p-[5px] rounded-full h-full aspect-square">
@@ -34,7 +46,7 @@ export default function InvoiceSummary() {
             </div>
             <div className="w-full h-full flex flex-col justify-between items-center ">
               <div className="text-sm text-sidebar-foreground-muted flex items-center gap-[5px] w-full">
-                <span>Total Outstanding in May</span>
+                <span>Total Outstanding This Month</span>
                 <svg
                   width="13"
                   height="13"
@@ -51,7 +63,9 @@ export default function InvoiceSummary() {
                   />
                 </svg>
               </div>
-              <h2 className="text-4xl font-medium mb-[10px]">$6,612.38</h2>
+              <h2 className="text-4xl font-medium mb-[10px]">
+                ${isLoading ? " --" : data.totalOutstanding}
+              </h2>
             </div>
           </CardContent>
         </Card>
@@ -75,7 +89,7 @@ export default function InvoiceSummary() {
             </div>
             <div className="w-full h-full flex flex-col justify-between items-center ">
               <div className="text-sm text-sidebar-foreground-muted flex items-center gap-[5px] w-full">
-                <span>Total Overdue in May</span>
+                <span>Total Overdue This Month</span>
                 <svg
                   width="13"
                   height="13"
@@ -92,7 +106,9 @@ export default function InvoiceSummary() {
                   />
                 </svg>
               </div>
-              <h2 className="text-4xl font-medium mb-[10px]">$2,925.49</h2>
+              <h2 className="text-4xl font-medium mb-[10px]">
+                ${isLoading ? " --" : data.totalOverdue}
+              </h2>
             </div>
           </CardContent>
         </Card>
@@ -119,7 +135,7 @@ export default function InvoiceSummary() {
             </div>
             <div className="w-full h-full flex flex-col justify-between items-center ">
               <div className="text-sm text-sidebar-foreground-muted flex items-center gap-[5px] w-full">
-                <span>Total Paid in May</span>
+                <span>Total Paid This Month</span>
                 <svg
                   width="13"
                   height="13"
@@ -136,7 +152,9 @@ export default function InvoiceSummary() {
                   />
                 </svg>
               </div>
-              <h2 className="text-4xl font-medium mb-[10px]">$3,435.45</h2>
+              <h2 className="text-4xl font-medium mb-[10px]">
+                ${isLoading ? " --" : data.totalPaidThisMonth}
+              </h2>
             </div>
           </CardContent>
         </Card>

@@ -38,19 +38,9 @@ export function LoginForm({
         email,
         password,
       });
-      if (data.session) {
-        await supabase.auth.setSession({
-          access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
-        });
-      }
-
-      // console.log("Login response session:", data.session);
-      // const { data: sess2 } = await supabase.auth.getSession();
-      // console.log("After login, getSession:", sess2.session);
 
       if (error) throw error;
-      router.push("/");
+      router.push("/invoices");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {

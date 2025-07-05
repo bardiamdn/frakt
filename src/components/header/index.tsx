@@ -1,80 +1,112 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { SidebarTrigger } from "../ui/sidebar";
-import Profile from "./profile";
-import { useEffect, useState } from "react";
-import Search from "../search";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { CustomButton } from "../ui/custom-button";
 
 export default function Header() {
   const [atTop, setAtTop] = useState(true);
+  const [state, setState] = useState<
+    "add" | "notifications" | "messages" | null
+  >();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setAtTop(window.scrollY === 0);
     };
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
 
+      if (target.classList.contains("header-icon")) return;
+
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setState(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll);
 
     handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   return (
     <header
       className={cn(
-        " w-full h-[100px] bg-background-accent flex items-center py-[20px] px-[50px] justify-between sticky top-0 z-20 transition-shadow ease-in-out duration-200",
+        " w-full h-[80px] bg-background-accent flex items-center py-[20px] px-[50px] justify-between sticky top-0 z-20 transition-shadow ease-in-out duration-200",
         atTop ? "shadow-none" : "shadow-md"
       )}
     >
       <SidebarTrigger />
-      {/* <svg
-          width="25"
-          height="25"
-          viewBox="0 0 25 25"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <line
-            x1="8.3998"
-            y1="0.900002"
-            x2="8.39981"
-            y2="24.1"
-            stroke="#919397"
-            strokeWidth="2.2"
-          />
-          <rect
-            x="1.2001"
-            y="1.2"
-            width="22.6"
-            height="22.6"
-            rx="6.9"
-            stroke="#919397"
-            strokeWidth="2.2"
-          />
-        </svg>
-      </SidebarTrigger> */}
-      <Search />
-      <div className="flex items-center gap-[15px] h-full">
-        <Notifications />
-        <Messages />
-        <Profile />
+      <div className=" relative w-[500px]">
+        <div className="absolute top-1/2 left-[5px] -translate-y-1/2 p-[8px] rounded-full bg-icon-background">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15.0237 13.738L12.2017 10.9149C14.3132 8.09316 13.7375 4.09399 10.9158 1.98249C8.09409 -0.129014 4.09492 0.446724 1.98342 3.26842C-0.128083 6.09012 0.447654 10.0893 3.26935 12.2008C5.53598 13.8969 8.64914 13.8969 10.9158 12.2008L13.7389 15.0239C14.0937 15.3787 14.6689 15.3787 15.0236 15.0239C15.3784 14.6691 15.3784 14.0939 15.0236 13.7392L15.0237 13.738ZM7.1161 11.6559C4.6083 11.6559 2.57536 9.62296 2.57536 7.11517C2.57536 4.60737 4.6083 2.57443 7.1161 2.57443C9.62389 2.57443 11.6568 4.60737 11.6568 7.11517C11.6542 9.62183 9.62278 11.6532 7.1161 11.6559Z"
+              fill="#818181"
+              className="fill-icon"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search to find results"
+          aria-label="Search"
+          className="bg-background shadow-xs rounded-full w-full h-10 pl-[50px] pr-[10px] border focus:outline-none focus:ring-2 focus:ring-primary"
+        />
       </div>
+      <div className="flex items-center gap-[15px] h-full">
+        <Notifications setState={setState} />
+        <Messages setState={setState} />
+        <Add setState={setState} />
+      </div>
+      <div
+        ref={containerRef}
+        className={`absolute top-[calc(100%+10px)] right-[10px] w-[350px] h-[600px] bg-background rounded-2xl shadow-xl transition-all duration-200 ease-in-out ${
+          !state
+            ? "pointer-events-none opacity-0 scale-90"
+            : "pointer-events-auto opacity-100 scale-100"
+        }`}
+      ></div>
     </header>
   );
 }
 
-const Notifications = () => {
+const Notifications = ({
+  setState,
+}: {
+  setState: Dispatch<
+    SetStateAction<"add" | "notifications" | "messages" | null | undefined>
+  >;
+}) => {
   return (
-    <div>
+    <CustomButton
+      className="header-icon"
+      variant="icon"
+      onClick={() => setState("notifications")}
+    >
       <svg
         width="18"
         height="18"
         viewBox="0 0 18 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className="size-6"
       >
         <g clipPath="url(#clip0_133_88)">
           <path
@@ -93,18 +125,30 @@ const Notifications = () => {
           </clipPath>
         </defs>
       </svg>
-    </div>
+    </CustomButton>
   );
 };
-const Messages = () => {
+
+const Messages = ({
+  setState,
+}: {
+  setState: Dispatch<
+    SetStateAction<"add" | "notifications" | "messages" | null | undefined>
+  >;
+}) => {
   return (
-    <div>
+    <CustomButton
+      className="header-icon"
+      variant="icon"
+      onClick={() => setState("messages")}
+    >
       <svg
         width="19"
         height="18"
         viewBox="0 0 19 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className="size-6"
       >
         <g clipPath="url(#clip0_133_85)">
           <path
@@ -123,6 +167,47 @@ const Messages = () => {
           </clipPath>
         </defs>
       </svg>
-    </div>
+    </CustomButton>
+  );
+};
+
+const Add = ({
+  setState,
+}: {
+  setState: Dispatch<
+    SetStateAction<"add" | "notifications" | "messages" | null | undefined>
+  >;
+}) => {
+  return (
+    <CustomButton
+      className="header-icon"
+      variant="icon"
+      onClick={() => setState("add")}
+    >
+      <svg
+        width="20"
+        height="21"
+        viewBox="0 0 20 21"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="size-6"
+      >
+        <rect
+          x="1.60029"
+          y="1.70002"
+          width="17.6"
+          height="17.6"
+          rx="5.6"
+          stroke="#818181"
+          strokeWidth="1.6"
+        />
+        <path
+          d="M10.4001 5.70007L10.4001 15.3001M15.2001 10.5001L5.6001 10.5001"
+          stroke="#818181"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+      </svg>
+    </CustomButton>
   );
 };

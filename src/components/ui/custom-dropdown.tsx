@@ -6,6 +6,8 @@ interface CustomDropdownProps {
   label: string;
   placeholder?: string;
   disabled?: boolean;
+  value: string;
+  onChange: (item: { value: string | null; id: number }, index: number) => void;
 }
 
 export const CustomDropdown = ({
@@ -13,10 +15,13 @@ export const CustomDropdown = ({
   label,
   items,
   disabled = false,
+  value,
+  onChange,
 }: CustomDropdownProps) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const selectedIndex = items.findIndex((it) => it.value === value);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,7 +56,7 @@ export const CustomDropdown = ({
               : "cursor-pointer group hover:text-foreground hover:border-foreground"
           }  text-foreground-muted border border-border pl-[20px] pr-[10px] rounded-full`}
         >
-          {selected === null ? placeholder : items[selected].value}
+          {selectedIndex >= 0 ? items[selectedIndex].value : placeholder}
           <svg
             width="24"
             height="24"
@@ -80,9 +85,12 @@ export const CustomDropdown = ({
         >
           {items.map((item, index) => (
             <button
-              key={index}
+              key={item.id}
               className="bg-pink-200 py-[10px] px-[10px] hover:bg-accent rounded-md"
-              onClick={() => setSelected(index)}
+              onClick={() => {
+                onChange(item, index);
+                setOpen(false);
+              }}
             >
               {item.value}
             </button>

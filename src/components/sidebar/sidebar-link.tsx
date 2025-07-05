@@ -14,7 +14,7 @@ export default function SidebarLink({
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-[15px] py-[10px] my-[5px]",
+        "flex items-center gap-[10px] py-[10px] my-[5px]",
         className
       )}
     >

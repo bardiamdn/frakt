@@ -1,4 +1,3 @@
-// "use client";
 import InvoiceSummary from "@/app/invoices/invoice-summary";
 import InvoiceTable from "./invioce-table";
 import { columns } from "./invioce-table/columns";

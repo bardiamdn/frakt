@@ -28,7 +28,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
         <AppProviders>
-          <LayoutWrapper>{children}</LayoutWrapper>
+          <LayoutWrapper>
+            <div
+              className={`sheet-backdrop fixed top-0 right-0 w-screen h-screen bg-[#42424270] z-20`}
+              style={{ display: "none" }}
+            ></div>
+            {children}
+          </LayoutWrapper>
         </AppProviders>
       </body>
     </html>
