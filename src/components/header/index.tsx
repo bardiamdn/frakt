@@ -42,7 +42,7 @@ export default function Header() {
   return (
     <header
       className={cn(
-        " w-full h-[80px] bg-background-accent flex items-center py-[20px] px-[50px] justify-between sticky top-0 z-20 transition-shadow ease-in-out duration-200",
+        " w-full h-[80px] bg-background-accent flex items-center py-[20px] px-[50px] justify-between sticky top-0 z-10 transition-shadow ease-in-out duration-200",
         atTop ? "shadow-none" : "shadow-md"
       )}
     >

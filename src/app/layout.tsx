@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { PaymentProvider } from "@/context/paymentContext";
-import { SidebarProvider } from "@/components/ui/sidebar";
-// import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import LayoutWrapper from "@/components/layout-wrapper";
 import AppProviders from "@/providers";
 
@@ -30,7 +27,7 @@ export default function RootLayout({
         <AppProviders>
           <LayoutWrapper>
             <div
-              className={`sheet-backdrop fixed top-0 right-0 w-screen h-screen bg-[#42424270] z-20`}
+              className={`sheet-backdrop fixed top-0 right-0 w-screen h-screen bg-[#42424270] z-30`}
               style={{ display: "none" }}
             ></div>
             {children}

@@ -18,12 +18,12 @@
 - [x] Navigation structure
 - [ ] Invoices
   - [x] Invoice list view
-  - [ ] Create new invoice
-  - [ ] Edit invoice
+  - [x] Create new invoice
+  - [x] Edit invoice
   - [ ] Update miltiple invoices
-  - [ ] Filter invoices
-  - [ ] Sort invoices
-  - [ ] Server side pagination
+  - [x] Filter invoices
+  - [x] Sort invoices
+  - [x] Server side pagination
   - [ ] PDF export/download
 - [ ] Payments
   - [ ] Payment tracking

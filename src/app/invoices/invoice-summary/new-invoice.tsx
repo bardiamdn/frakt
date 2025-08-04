@@ -6,11 +6,14 @@ import { useEffect, useRef, useState } from "react";
 import { CalendarInput } from "./calendar";
 import { fetchAllClients } from "@/lib/queries/clients";
 import { Database } from "@/types/supabase";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { currencyOptions } from "@/data/currencies";
 import { paymentMethods } from "@/data/payment-method";
+import { insertInvoice } from "@/lib/queries/invoices";
+import { supabase } from "@/lib/supabaseClient";
 
-type Client = Database["public"]["Tables"]["clients"]["Row"];
+type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
+type InvoiceInsert = Database["public"]["Tables"]["invoices"]["Insert"];
 
 export const NewInvocie = () => {
   const [openSheet, setOpenSheet] = useState(false);
@@ -18,34 +21,22 @@ export const NewInvocie = () => {
     value: string | null;
     id: number;
   } | null>(null);
-
-  const [paid, setPaid] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
-
-  const [formData, setFormData] = useState<{
-    clientId: number;
-    clientName: string;
-    clientEmail: string;
-    invoiceId: string;
-    invoiceDate: Date;
-    dueDate: Date;
-    currency: string;
-    description: string;
-    paid: boolean;
-    paymentMethod: string;
-    paidAt: Date;
-  }>({
-    clientId: 0,
-    clientName: "",
-    clientEmail: "",
-    invoiceId: "",
-    invoiceDate: new Date(),
-    dueDate: new Date(),
+  const [paid, setPaid] = useState(false);
+  const [formData, setFormData] = useState<InvoiceInsert>({
+    client_id: null,
+    client_name: "",
+    client_email: "",
+    invoice_id: 0,
+    invoice_date: new Date().toISOString(),
+    due_date: new Date().toISOString(),
     currency: "",
     description: "",
     paid: false,
-    paymentMethod: "",
-    paidAt: new Date(),
+    payment_method: "",
+    paid_at: null,
+    amount: 0,
+    issued_by: "",
   });
 
   const {
@@ -57,11 +48,27 @@ export const NewInvocie = () => {
     queryFn: fetchAllClients,
   });
 
+  const queryClient = useQueryClient();
+
   const clientNames =
     clients?.map((client) => ({
       value: client.name,
       id: client.id,
     })) || [];
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setFormData((prev) => ({
+          ...prev,
+          issued_by: data.user.id,
+        }));
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,18 +92,21 @@ export const NewInvocie = () => {
     }
   };
 
-  // const updateFormData = <K extends keyof typeof formData>(
-  //   key: K,
-  //   value: (typeof formData)[K]
-  // ) => {
-  //   setFormData((prev) => {
-  //     if (!prev) return prev;
-  //     return {
-  //       ...prev,
-  //       [key]: value,
-  //     };
-  //   });
-  // };
+  const {
+    mutate: createInvoice,
+    // isLoading: isCreating,
+    isError: isCreateError,
+    error: createError,
+  } = useMutation({
+    mutationFn: (invoice: Invoice) => insertInvoice(invoice),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      setOpenSheet(false); // Close the sheet
+    },
+    onError: (error) => {
+      console.error("Failed to create invoice", error);
+    },
+  });
 
   const updateClientInfo = (item: { value: string | null; id: number }) => {
     const client = clients?.find((e) => e.id === item.id);
@@ -104,9 +114,9 @@ export const NewInvocie = () => {
       if (!prev) return prev;
       return {
         ...prev,
-        clientId: item.id,
-        clientName: item.value ?? "",
-        clientEmail: client?.email ?? "",
+        client_id: item.id ?? 0,
+        client_name: item.value ?? "",
+        client_email: client?.email ?? "",
       };
     });
   };
@@ -181,7 +191,7 @@ export const NewInvocie = () => {
               <h3>Invoices</h3>
               <CustomButton
                 variant={"icon"}
-                className="rounded-sm text-button-foreground hover:bg-background-accent"
+                className="rounded-sm text-button-foreground hover:bg-background hover:shadow-none"
                 onClick={() => setOpenSheet(false)}
               >
                 <svg
@@ -217,16 +227,25 @@ export const NewInvocie = () => {
                 <input
                   disabled
                   placeholder="Email@email.com"
-                  value={formData.clientEmail}
+                  value={formData.client_email}
                   readOnly
                   className="text-foreground-muted w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs"
                 />
               </div>
               <div className="flex flex-col items-start justify-center py-[15px] gap-[15px]">
-                <span className="text-foreground-muted">Invoice ID</span>
-                <div className="relative w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs">
-                  <input disabled placeholder="IN-56213" />
-                  <button className="group rounded-full bg-icon-background cursor-pointer h-[40px] w-[40px] flex items-center justify-center absolute top-1/2 right-0 -translate-y-1/2 translate-x-[-5px]">
+                <span className="text-foreground">Amount</span>
+                <input
+                  className="relative w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs"
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      amount: e.target.value ? parseFloat(e.target.value) : 0,
+                    }))
+                  }
+                />
+                {/* <button className="group rounded-full bg-icon-background cursor-pointer h-[40px] w-[40px] flex items-center justify-center absolute top-1/2 right-0 -translate-y-1/2 translate-x-[-5px]">
                     <svg
                       width="16"
                       height="16"
@@ -243,15 +262,14 @@ export const NewInvocie = () => {
                         className="group-hover:stroke-foreground stroke-icon"
                       />
                     </svg>
-                  </button>
-                </div>
+                  </button> */}
               </div>
               <CalendarInput label="Invoice Date" />
               <CalendarInput label="Due Date" />
 
               <CustomDropdown
                 items={currencyOptions}
-                value={formData.currency}
+                value={formData.currency ?? ""}
                 onChange={(item) => {
                   setFormData((prev) => {
                     if (!prev) return prev;
@@ -280,7 +298,7 @@ export const NewInvocie = () => {
             </div>
             <CustomDropdown
               items={paymentMethods}
-              value={formData.paymentMethod}
+              value={formData.payment_method ?? ""}
               onChange={(item) => {
                 setFormData((prev) => {
                   if (!prev) return prev;
@@ -311,7 +329,9 @@ export const NewInvocie = () => {
               </CustomButton>
               <CustomButton
                 className="py-[10px] px-[20px] text-base rounded-full"
-                onClick={() => setOpenSheet(false)}
+                onClick={() => (
+                  setOpenSheet(false), createInvoice(formData as Invoice)
+                )}
               >
                 Save
               </CustomButton>

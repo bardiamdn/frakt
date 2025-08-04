@@ -17,7 +17,7 @@ export default function AppSidebar() {
   const currentPath = usePathname().replace("/", "");
 
   return (
-    <Sidebar className="">
+    <Sidebar className="z-20">
       <SidebarHeader className="gap-[20px] mb-[15px]">
         <div className="flex justify-center items-center">
           <Link href="/">

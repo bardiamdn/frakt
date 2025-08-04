@@ -127,7 +127,6 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
         onClick={() => {
           setOpenSheet(true);
           setInvoiceData(row);
-          console.log(row);
         }}
         className="relative cursor-pointer group flex items-center justify-between gap-[10px] border border-transparent hover:border-border px-[10px] py-[5px] rounded-sm hover:bg-background-accent hover:text-foreground"
       >
@@ -160,7 +159,7 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
           <h3>Edit Invoice</h3>
           <CustomButton
             variant={"icon"}
-            className="rounded-sm text-button-foreground hover:bg-background-accent"
+            className="rounded-sm text-button-foreground  hover:bg-background hover:shadow-none"
             onClick={() => setOpenSheet(false)}
           >
             <svg
@@ -201,28 +200,18 @@ export const EditInvoiceCell = ({ row }: { row: Invoice }) => {
             />
           </div>
           <div className="flex flex-col items-start justify-center py-[15px] gap-[15px]">
-            <span className="text-foreground-muted">Invoice ID</span>
-            <div className="relative w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs">
-              <input disabled placeholder={invoiceData.invoice_id.toString()} />
-              <button className="group rounded-full bg-icon-background cursor-pointer h-[40px] w-[40px] flex items-center justify-center absolute top-1/2 right-0 -translate-y-1/2 translate-x-[-5px]">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.39196 10.304L6.07996 12.608M7.99996 14.528H14.144M3.00796 10.304L10.58 2.46743C11.3953 1.65213 12.7172 1.65213 13.5325 2.46743C14.3478 3.28272 14.3478 4.60458 13.5325 5.41988L5.69596 12.992L1.85596 14.144L3.00796 10.304Z"
-                    stroke="#818181"
-                    strokeWidth="1.28"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="group-hover:stroke-foreground stroke-icon"
-                  />
-                </svg>
-              </button>
-            </div>
+            <span className="text-foreground">Amount</span>
+            <input
+              className="relative w-full rounded-full border border-border h-[50px] flex items-center justify-start px-[20px] shadow-xs"
+              type="number"
+              value={invoiceData.amount}
+              onChange={(e) =>
+                setInvoiceData((prev) => ({
+                  ...prev,
+                  amount: e.target.value ? parseFloat(e.target.value) : 0,
+                }))
+              }
+            />
           </div>
           <CalendarInput
             value={

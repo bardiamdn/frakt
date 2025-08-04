@@ -1,4 +1,18 @@
-const Search = () => {
+import type { ColumnFiltersState } from "@tanstack/react-table";
+
+interface SearchProps {
+  columnFilters: ColumnFiltersState;
+  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>;
+}
+
+export default function Search({
+  columnFilters,
+  setColumnFilters,
+}: SearchProps) {
+  const nameValue =
+    (columnFilters.find((filter) => filter.id === "client_name")
+      ?.value as string) ?? "";
+
   return (
     <div className=" relative w-[500px]">
       <div className="absolute top-1/2 left-[5px] -translate-y-1/2 p-[8px] rounded-full bg-icon-background">
@@ -18,12 +32,20 @@ const Search = () => {
       </div>
       <input
         type="text"
-        placeholder="Search to filter results"
+        placeholder="Filter by name"
+        value={nameValue}
+        onChange={(e) => {
+          const value = e.target.value;
+          setColumnFilters((prev) => {
+            const otherFilters = prev.filter((f) => f.id !== "client_name");
+            return value
+              ? [...otherFilters, { id: "client_name", value }]
+              : otherFilters;
+          });
+        }}
         aria-label="Search"
         className="bg-background shadow-xs rounded-full w-full h-10 pl-[50px] pr-[10px] border focus:outline-none focus:ring-2 focus:ring-primary"
       />
     </div>
   );
-};
-
-export default Search;
+}

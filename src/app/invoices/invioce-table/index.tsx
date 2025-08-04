@@ -24,21 +24,39 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CheckIcon } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
 
 type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
+  columnFilters: ColumnFiltersState;
+  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>;
+  dueDateRange: [Date | null, Date | null];
+  setDueDateRange: React.Dispatch<
+    React.SetStateAction<[Date | null, Date | null]>
+  >;
+  amountRange: [number | null, number | null];
+  setAmountRange: React.Dispatch<
+    React.SetStateAction<[number | null, number | null]>
+  >;
+  statusFilters: string[];
+  setStatusFilters: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function InvoiceTable<TData, TValue>({
   columns,
+  columnFilters,
+  setColumnFilters,
+  dueDateRange,
+  // setDueDateRange,
+  amountRange,
+  // setAmountRange,
+  statusFilters,
+  setStatusFilters,
 }: DataTableProps<TData, TValue>) {
   const [pageSizeOpen, setPageSizeOpen] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -51,37 +69,40 @@ export default function InvoiceTable<TData, TValue>({
         ["paid", "unpaid", "overdue"].includes(val)
       )
     : undefined;
+  const nameFilter = columnFilters.find((filter) => filter.id === "client_name")
+    ?.value as string | undefined;
+  const dueDateFrom = dueDateRange[0]?.toISOString() as string | undefined;
+  const dueDateTo = dueDateRange[1]?.toISOString() as string | undefined;
+  const amountMin = amountRange[0] as number | undefined;
+  const amountMax = amountRange[1] as number | undefined;
 
   const { data, isLoading, isError, error } = useQuery<
     { data: Invoice[]; count: number | null },
     Error
   >({
-    queryKey: ["invoices", pageIndex, pageSize, statusFilter],
+    queryKey: [
+      "invoices",
+      pageIndex,
+      pageSize,
+      statusFilter,
+      nameFilter,
+      dueDateFrom,
+      dueDateTo,
+      amountMin,
+      amountMax,
+    ],
     queryFn: () =>
       fetchInvoices({
         page: pageIndex,
         pageSize,
         statusFilters: statusFilter,
+        nameFilter,
+        dueDateFrom,
+        dueDateTo,
+        amountMin,
+        amountMax,
       }),
   });
-
-  // useEffect(() => {
-  //   const {
-  //     data: { subscription },
-  //   } = supabase.auth.onAuthStateChange((event, session) => {
-  //     console.log("Auth event:", event, "session:", session);
-  //     // you can store session in state or trigger logic when session becomes non-null
-  //   });
-  //   // On mount, you can also immediately check:
-  //   supabase.auth.getSession().then(({ data }) => {
-  //     console.log("Initial session:", data.session);
-  //   });
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   };
-  // }, []);
-
-  // const { data, error } = await supabase.auth.getSession()
 
   const [sorting, setSorting] = useState<SortingState>([
     {
@@ -94,8 +115,8 @@ export default function InvoiceTable<TData, TValue>({
     data: (data?.data ?? []) as TData[],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     manualPagination: true,
     state: {
